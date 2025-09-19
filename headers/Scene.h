@@ -8,10 +8,10 @@ private:
 
 public:
 	// Basic Scene Methods
-	Scene();
-	~Scene();
+	Scene(); // Initialize any added game content here
+	~Scene(); // Cleanup any added game content here
 
-	void Update(float deltaTime);
-	void Render();
-	void EventHandler(const SDL_Event& sdlEvent);
+	void Update(float deltaTime); // Update game logic here
+	void Render(); // Render game content here
+	void EventHandler(const SDL_Event& sdlEvent); // Handle scene-specific events here
 };

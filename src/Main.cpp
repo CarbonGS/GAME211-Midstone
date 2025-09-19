@@ -1,4 +1,5 @@
 #include <Engine.h>
+#include <Scene.h>
 
 int main() {
 	// Initialize SDL Video subsystem
@@ -11,8 +12,14 @@ int main() {
 	SDL_Event event;
 
 	// Main loop
+	Scene scene;
+	Engine::Timer timer;
+	timer.Start();
 	while (running) {
-				while (SDL_PollEvent(&event)) {
+
+		timer.UpdateTicks();
+
+		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_EVENT_QUIT) {
 				running = false;
 			}
@@ -20,11 +27,13 @@ int main() {
 
 		window.Clear();
 
-
+		scene.Update(timer.GetDeltaTime());
+		scene.Render();
 
 		window.Present();
 	}
 
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	SDL_Quit();
 	return 0;
 }

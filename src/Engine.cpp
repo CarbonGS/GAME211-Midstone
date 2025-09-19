@@ -2,16 +2,16 @@
 
 #include <stdexcept>
 #include <SDL3/SDL.h>
-
+#include <iostream>
 
 Engine::Window::Window(const std::string& title, int width, int height)
 {
-	window = SDL_CreateWindow(title.c_str(), width, height, NULL);
+	window = SDL_CreateWindow(title.c_str(), width, height, SDL_WINDOW_RESIZABLE);
 	if (!window) {
 		throw std::runtime_error("Failed to create window: " + std::string(SDL_GetError()));
 	}
 
-	renderer = SDL_CreateRenderer(window, "Main Renderer");
+	renderer = SDL_CreateRenderer(window, NULL);
 	if (!renderer) {
 		throw std::runtime_error("Failed to create renderer: " + std::string(SDL_GetError()));
 	}
