@@ -4,7 +4,10 @@
 
 namespace Engine {
 
-	// Created By Stojan B N01717368: 2025-09-19
+	/// <summary>
+	/// Window class definitions
+	/// Handles window creation, rendering, and management
+	/// </summary>
 	class Window {
 	public:
 
@@ -23,7 +26,10 @@ namespace Engine {
 
 	};
 
-	// Created By Stojan B N01717368: 2025-09-19
+	/// <summary>
+	/// Timer class definitions
+	/// Handles time tracking for frame updates and total elapsed time
+	/// </summary>
 	class Timer {
 	public:
 		Timer();

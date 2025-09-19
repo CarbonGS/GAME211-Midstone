@@ -3,10 +3,7 @@
 #include <stdexcept>
 #include <SDL3/SDL.h>
 
-/// <summary>
-/// Window class definitions
-/// Handles window creation, rendering, and management
-/// </summary>
+
 Engine::Window::Window(const std::string& title, int width, int height)
 {
 	window = SDL_CreateWindow(title.c_str(), width, height, NULL);
@@ -39,15 +36,7 @@ void Engine::Window::Present()
 {
 	SDL_RenderPresent(renderer);
 }
-/// End of Window class definitions
 
-
-
-
-/// <summary>
-/// Timer class definitions
-/// Handles time tracking for frame updates and total elapsed time
-/// </summary>
 Engine::Timer::Timer()
 {
 	lastTicks = 0;
