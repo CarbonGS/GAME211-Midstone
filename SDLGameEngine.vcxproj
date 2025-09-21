@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)\extern\SDL3-3.2.22\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\extern\SDL3-3.2.22\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\extern\SDL3_image-3.2.4\include;$(ProjectDir)\extern\SDL3-3.2.22\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\extern\SDL3_image-3.2.4\lib\x64;$(ProjectDir)\extern\SDL3-3.2.22\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -113,7 +113,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -132,15 +132,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\Image.cpp" />
+    <ClCompile Include="src\LevelDesigner.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extern\SDL3.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Engine.h" />
+    <ClInclude Include="headers\Image.h" />
+    <ClInclude Include="headers\LevelDesigner.h" />
     <ClInclude Include="headers\Scene.h" />
+    <ClInclude Include="headers\Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
