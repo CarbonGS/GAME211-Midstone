@@ -1,18 +1,18 @@
 #pragma once
 #include <map>
+#include "Engine.h"
 
 class Tile {	
 
 public:
 	Tile();
-	~Tile();
+	virtual ~Tile();
 
 	/// <summary>
 	/// RGB VALUES
 	/// Air: 255,255, 255 (White)
 	/// 
 	/// Platform: 0,0,0 (Black)
-	/// Wall: 128,128,128 (Gray)
 	/// 
 	/// Spawn: 0,255,0 (Green)
 	/// 
@@ -28,17 +28,17 @@ public:
 
 		//Solid Tiles
 		TILE_PLATFORM = 1, // Platform/Floor
-		TILE_WALL = 2, // Wall (Might not be used)
 
 		// Spawn Tiles
-		TILE_SPAWN = 3, // Player Spawn Point
+		TILE_SPAWN = 2, // Player Spawn Point
 
 		// Hazard Tiles
-		TILE_SPIKE = 4 // Spike Hazard
+		TILE_SPIKE = 3 // Spike Hazard
 		// Add more tile types as needed
 
 	};	
 
 	int type;
-
+	SDL_Point position; // Tile position in the grid
+	virtual void Update(Engine::Timer* deltaTime);
 };

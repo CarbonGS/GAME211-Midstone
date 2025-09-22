@@ -135,7 +135,10 @@
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\LevelDesigner.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\PlatformTile.cpp" />
     <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\SpawnTile.cpp" />
+    <ClCompile Include="src\SpikeTile.cpp" />
     <ClCompile Include="src\Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -145,7 +148,10 @@
     <ClInclude Include="headers\Engine.h" />
     <ClInclude Include="headers\Image.h" />
     <ClInclude Include="headers\LevelDesigner.h" />
+    <ClInclude Include="headers\PlatformTile.h" />
     <ClInclude Include="headers\Scene.h" />
+    <ClInclude Include="headers\SpawnTile.h" />
+    <ClInclude Include="headers\SpikeTile.h" />
     <ClInclude Include="headers\Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
