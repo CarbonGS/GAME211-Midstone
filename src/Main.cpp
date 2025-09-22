@@ -6,7 +6,26 @@ int main() {
 	SDL_Init(SDL_INIT_VIDEO);
 
 	// Create window
-	Engine::Window window("Game Window", 800, 600);
+	int width = 800; // Default width
+	int height = 600; // Default height
+
+#ifdef _DEBUG
+	width = 1280;
+	height = 720;
+#else
+	SDL_DisplayMode dm;
+	if (SDL_GetCurrentDisplayMode(0, &dm) != 0) {
+		SDL_Log("SDL_GetCurrentDisplayMode failed: %s", SDL_GetError());
+		return -1;
+	}
+	else {
+		width = dm.w;
+		height = dm.h;
+	}
+#endif
+	SDL_Log("Window Size: %dx%d", width, height);
+	Engine::Window window("Game Title", width, height);
+
 
 	bool running = true;
 	SDL_Event event;
