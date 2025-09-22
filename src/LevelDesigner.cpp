@@ -1,5 +1,10 @@
 #include "LevelDesigner.h"
 
+// Tiles
+#include "SpikeTile.h"
+#include "SpawnTile.h"
+#include "PlatformTile.h"
+
 LevelDesigner::LevelDesigner() : levelImage(nullptr) {}
 
 LevelDesigner::~LevelDesigner()
@@ -44,23 +49,29 @@ void LevelDesigner::InitColorMap(SDL_PixelFormatDetails* format)
 	// Add more colors and their corresponding tile types as needed
 	colorToTileMap[SDL_MapRGB(format, nullptr,255, 255, 255)]	= Tile::TILE_EMPTY;     // White - Air
 	colorToTileMap[SDL_MapRGB(format, nullptr,0, 0, 0)]			= Tile::TILE_PLATFORM;	// Black - Platform
-	colorToTileMap[SDL_MapRGB(format, nullptr,128, 128, 128)]	= Tile::TILE_WALL;		// Gray - Wall
 	colorToTileMap[SDL_MapRGB(format, nullptr,0, 255, 0)]		= Tile::TILE_SPAWN;		// Green - Spawn Point
 	colorToTileMap[SDL_MapRGB(format, nullptr,255, 0, 0)]		= Tile::TILE_SPIKE;		// Red - Spike Hazard
 }
 
 void LevelDesigner::placeTile(int x, int y, int tileType)
 {
-	////// TODO: Create tile child classes for each type and handle them accordingly 
-	////// then use switch case here to instantiate the correct type
+
+	Tile* tile = nullptr;
+	switch (tileType) {
+		case Tile::TILE_EMPTY: tile = new Tile(); break;
+		case Tile::TILE_PLATFORM: tile = new PlatformTile(); break;
+		case Tile::TILE_SPAWN: tile = new SpawnTile(); break;
+		case Tile::TILE_SPIKE: tile = new SpikeTile(); break;
+		default: tile = new Tile(); break; // Default to empty tile
+	}
 
 	// Scale pixel coordinates to world coordinates
 	int worldX = x * TILE_SIZE;
 	int worldY = y * TILE_SIZE;
 
-	Tile tile; // Create a new tile
-	tile.type = tileType; // Set the tile type
-	tiles.push_back(tile); // Add the tile to the list (World Tiles)
+	tile->type = tileType;
+	tile->position = { worldX, worldY };
+	tiles.push_back(*tile);
 }
 
 int LevelDesigner::getTileTypeFromColor(SDL_Color color, SDL_Surface surface)
