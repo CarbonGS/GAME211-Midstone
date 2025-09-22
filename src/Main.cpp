@@ -23,6 +23,7 @@ int main() {
 			if (event.type == SDL_EVENT_QUIT) {
 				running = false;
 			}
+			scene.EventHandler(event);
 		}
 
 		window.Clear();
