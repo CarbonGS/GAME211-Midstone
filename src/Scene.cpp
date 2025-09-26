@@ -6,7 +6,11 @@
 /// </summary>
 Scene::Scene()
 {
-
+	levelImage = new Image();
+	levelImage->LoadSurface("extern/lvl.png"); // Temp level image path
+	levelDesigner.LevelDesignerLoad(levelImage);
+	levelDesigner.GenerateLevel();
+	SDL_Log("Total Tiles Loaded: %d", levelDesigner.GetTotalTiles());
 }
 
 /// <summary>

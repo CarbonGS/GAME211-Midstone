@@ -1,10 +1,13 @@
 #pragma once
 #include <SDL3/SDL.h>
 
+#include "LevelDesigner.h"
 class Scene {
 
 private:
 	// Main Game Content Here (e.g. game objects, player, enemies, etc.)
+	Image* levelImage;
+	LevelDesigner levelDesigner;
 
 public:
 	// Basic Scene Methods

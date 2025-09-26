@@ -11,16 +11,16 @@ public:
 
 	void LevelDesignerLoad(Image* levelfile);
 	void GenerateLevel();
+	int GetTotalTiles() const { return static_cast<int>(tiles.size()); }
 
 private:
 	Image* levelImage;
 	const int TILE_SIZE = 32; // Tile size in world units
 
 	std::map<Uint32, Tile::TileType> colorToTileMap; // Map to hold color to tile type mapping
-	void InitColorMap(SDL_PixelFormatDetails* format); // Initialize the color to tile type map
+	void InitColorMap(const SDL_PixelFormatDetails* format); // Initialize the color to tile type map
 
 	void placeTile(int x, int y, int tileType); // Place a tile at the given coordinates
 	int getTileTypeFromColor(SDL_Color color, SDL_Surface surface); // Get tile type based on color
-
 	std::vector<Tile> tiles; // Vector to hold all the tiles in the world
 };
