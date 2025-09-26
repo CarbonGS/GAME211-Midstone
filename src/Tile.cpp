@@ -9,10 +9,7 @@ Tile::Tile()
 
 Tile::~Tile()
 {
-	if (texture) {
-		delete texture;
-		texture = nullptr;
-	}
+	// Level Designer handles texture cleanup
 }
 
 void Tile::Update(Engine::Timer* deltaTime)

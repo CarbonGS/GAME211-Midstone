@@ -155,6 +155,8 @@
     <ClInclude Include="headers\Tile.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\background.png" />
+    <Image Include="assets\lvl.png" />
     <Image Include="assets\platforms.png" />
     <Image Include="assets\spike.png" />
   </ItemGroup>

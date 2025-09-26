@@ -9,14 +9,7 @@ private:
 
 public:
 	Image() : surface(nullptr), texture(nullptr) {}
-	~Image() {
-		if (texture) {
-			SDL_DestroyTexture(texture);
-		}
-		if (surface) {
-			SDL_DestroySurface(surface);
-		}
-	}
+	~Image() {};
 
 	SDL_Surface* LoadSurface(const char* file);
 	SDL_Texture* LoadTexture(SDL_Renderer* renderer, const char* file);

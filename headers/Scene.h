@@ -8,6 +8,7 @@ class Scene {
 private:
 	// Main Game Content Here (e.g. game objects, player, enemies, etc.)
 	Image* levelImage;
+	Image* backgroundImage;
 	LevelDesigner levelDesigner;
 
 public:
@@ -16,6 +17,6 @@ public:
 	~Scene(); // Cleanup any added game content here
 
 	void Update(float deltaTime); // Update game logic here
-	void Render(SDL_Renderer* renderer); // Render game content here
+	void Render(SDL_Renderer* renderer, int w, int h); // Render game content here
 	void EventHandler(const SDL_Event& sdlEvent); // Handle scene-specific events here
 };

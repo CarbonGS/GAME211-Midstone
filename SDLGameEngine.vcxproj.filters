@@ -96,5 +96,11 @@
     <Image Include="assets\spike.png">
       <Filter>Resource Files\Assets</Filter>
     </Image>
+    <Image Include="assets\lvl.png">
+      <Filter>Resource Files\Assets</Filter>
+    </Image>
+    <Image Include="assets\background.png">
+      <Filter>Resource Files\Assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>

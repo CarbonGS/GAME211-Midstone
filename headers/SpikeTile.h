@@ -7,7 +7,6 @@ private:
 
 public:
 	SpikeTile(Image* spikeTexture);
-	~SpikeTile() override;
 
 	void Update(Engine::Timer* deltaTime) override;
 };
