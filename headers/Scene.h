@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL3/SDL.h>
+#include "Engine.h"
 
 #include "LevelDesigner.h"
 class Scene {
@@ -11,10 +12,10 @@ private:
 
 public:
 	// Basic Scene Methods
-	Scene(); // Initialize any added game content here
+	Scene(SDL_Renderer* renderer); // Initialize any added game content here
 	~Scene(); // Cleanup any added game content here
 
 	void Update(float deltaTime); // Update game logic here
-	void Render(); // Render game content here
+	void Render(SDL_Renderer* renderer); // Render game content here
 	void EventHandler(const SDL_Event& sdlEvent); // Handle scene-specific events here
 };

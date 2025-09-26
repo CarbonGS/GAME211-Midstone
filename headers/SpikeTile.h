@@ -2,10 +2,12 @@
 #include "Tile.h"
 
 class SpikeTile : public Tile {
+private:
+	int damage;
+
 public:
-	SpikeTile();
+	SpikeTile(Image* spikeTexture);
 	~SpikeTile() override;
 
-	int damage;
 	void Update(Engine::Timer* deltaTime) override;
 };

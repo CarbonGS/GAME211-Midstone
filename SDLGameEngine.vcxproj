@@ -154,6 +154,10 @@
     <ClInclude Include="headers\SpikeTile.h" />
     <ClInclude Include="headers\Tile.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\platforms.png" />
+    <Image Include="assets\spike.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

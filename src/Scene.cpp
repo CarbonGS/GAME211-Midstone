@@ -4,13 +4,12 @@
 /// Constructs a new Scene object.
 /// Initializes any added game content here.
 /// </summary>
-Scene::Scene()
+Scene::Scene(SDL_Renderer* renderer)
 {
 	levelImage = new Image();
 	levelImage->LoadSurface("extern/lvl.png"); // Temp level image path
 	levelDesigner.LevelDesignerLoad(levelImage);
-	levelDesigner.GenerateLevel();
-	SDL_Log("Total Tiles Loaded: %d", levelDesigner.GetTotalTiles());
+	levelDesigner.GenerateLevel(renderer);
 }
 
 /// <summary>
@@ -36,8 +35,14 @@ void Scene::Update(float deltaTime)
 /// Renders the scene.
 /// Render game content here.
 /// </summary>
-void Scene::Render()
+void Scene::Render(SDL_Renderer* renderer)
 {
+	const std::vector<Tile*>& worldTiles = levelDesigner.GetWorldTiles();
+	for (Tile* tile : worldTiles) {
+		if (tile->type != Tile::TILE_EMPTY && tile->type != Tile::TILE_SPAWN) { // Only render textured tiles
+			tile->Render(renderer);
+		}
+	}
 }
 
 /// <summary>

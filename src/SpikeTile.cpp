@@ -1,9 +1,10 @@
 #include "SpikeTile.h"
 
-SpikeTile::SpikeTile()
+SpikeTile::SpikeTile(Image* spikeTexture)
 {
 	type = TILE_SPIKE;
-	damage = 10;
+	texture = spikeTexture;
+	damage = 10; // Default damage value, can be adjusted as needed
 }
 
 SpikeTile::~SpikeTile()

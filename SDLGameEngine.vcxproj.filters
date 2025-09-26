@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Tiles">
       <UniqueIdentifier>{309d062e-7519-4590-aeac-10122e7cce6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Assets">
+      <UniqueIdentifier>{20ddf0fe-9829-4590-ad7d-46ee63be8279}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -85,5 +88,13 @@
     <ClInclude Include="headers\PlatformTile.h">
       <Filter>Header Files\Tiles</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\platforms.png">
+      <Filter>Resource Files\Assets</Filter>
+    </Image>
+    <Image Include="assets\spike.png">
+      <Filter>Resource Files\Assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>

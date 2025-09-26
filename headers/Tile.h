@@ -1,6 +1,9 @@
 #pragma once
 #include <map>
 #include "Engine.h"
+#include "Image.h"
+
+#define TILE_SIZE 32 // Size of each tile in pixels
 
 class Tile {	
 
@@ -40,5 +43,8 @@ public:
 
 	int type;
 	SDL_Point position; // Tile position in the grid
+	Image* texture = nullptr; // Pointer to the tile's texture
+
 	virtual void Update(Engine::Timer* deltaTime);
+	virtual void Render(SDL_Renderer* renderer) const;
 };
