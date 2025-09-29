@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="extern\SDL3.dll" />
+    <None Include="SDL3_image.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Engine.h" />
@@ -159,6 +160,10 @@
     <Image Include="assets\lvl.png" />
     <Image Include="assets\platforms.png" />
     <Image Include="assets\spike.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="extern\SDL3-3.2.22\lib\x64\SDL3.lib" />
+    <Library Include="extern\SDL3_image-3.2.4\lib\x64\SDL3_image.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

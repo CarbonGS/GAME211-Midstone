@@ -62,6 +62,9 @@
     <None Include="extern\SDL3.dll">
       <Filter>External</Filter>
     </None>
+    <None Include="SDL3_image.dll">
+      <Filter>External</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Engine.h">
@@ -102,5 +105,13 @@
     <Image Include="assets\background.png">
       <Filter>Resource Files\Assets</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="extern\SDL3-3.2.22\lib\x64\SDL3.lib">
+      <Filter>External</Filter>
+    </Library>
+    <Library Include="extern\SDL3_image-3.2.4\lib\x64\SDL3_image.lib">
+      <Filter>External</Filter>
+    </Library>
   </ItemGroup>
 </Project>
