@@ -4,6 +4,7 @@
 #include "SpikeTile.h"
 #include "SpawnTile.h"
 #include "PlatformTile.h"
+#include "Camera.h"
 
 LevelDesigner::LevelDesigner() : levelImage(nullptr), window(nullptr) {}
 
@@ -68,10 +69,10 @@ const std::vector<Tile*>& LevelDesigner::GetWorldTiles() const
 void LevelDesigner::InitColorMap(const SDL_PixelFormatDetails* format)
 {
 	// Add more colors and their corresponding tile types as needed
-	colorToTileMap[SDL_MapRGB(format, nullptr,255, 255, 255)]	= Tile::TILE_EMPTY;     // White - Air
-	colorToTileMap[SDL_MapRGB(format, nullptr,0, 0, 0)]			= Tile::TILE_PLATFORM;	// Black - Platform
-	colorToTileMap[SDL_MapRGB(format, nullptr,0, 255, 0)]		= Tile::TILE_SPAWN;		// Green - Spawn Point
-	colorToTileMap[SDL_MapRGB(format, nullptr,255, 0, 0)]		= Tile::TILE_SPIKE;		// Red - Spike Hazard
+	colorToTileMap[SDL_MapRGB(format, nullptr,255, 255, 255)] = Tile::TILE_EMPTY;     // White - Air
+	colorToTileMap[SDL_MapRGB(format, nullptr,0, 0, 0)] = Tile::TILE_PLATFORM; // Black - Platform
+	colorToTileMap[SDL_MapRGB(format, nullptr,0, 255, 0)] = Tile::TILE_SPAWN; // Green - Spawn Point
+	colorToTileMap[SDL_MapRGB(format, nullptr,255, 0, 0)] = Tile::TILE_SPIKE; // Red - Spike Hazard
 }
 
 void LevelDesigner::InitTileTextures(SDL_Renderer* ren)
@@ -85,7 +86,6 @@ void LevelDesigner::InitTileTextures(SDL_Renderer* ren)
 
 void LevelDesigner::placeTile(int x, int y, int tileType)
 {
-
 	Tile* tile = nullptr;
 	switch (tileType) {
 		case Tile::TILE_EMPTY: tile = new Tile(); break;
@@ -112,4 +112,13 @@ int LevelDesigner::getTileTypeFromColor(SDL_Color color, SDL_Surface surface)
 		return it->second;
 	}
 	return Tile::TILE_EMPTY; // Default to empty if color not found
+}
+
+void LevelDesigner::RenderWorld(SDL_Renderer* renderer, const Camera& camera) const
+{
+	for (Tile* tile : tiles) {
+		if (tile->type != Tile::TILE_EMPTY && tile->type != Tile::TILE_SPAWN) {
+			tile->Render(renderer, camera);
+		}
+	}
 }

@@ -1,4 +1,5 @@
 #include "Tile.h"
+#include "Camera.h"
 
 Tile::Tile()
 {
@@ -17,10 +18,16 @@ void Tile::Update(Engine::Timer* deltaTime)
 	// Current tile does not have any specific update logic
 }
 
-void Tile::Render(SDL_Renderer* renderer) const
+void Tile::Render(SDL_Renderer* renderer, const Camera& camera) const
 {
+	float zoom = camera.zoom;
+	SDL_FRect dst = {
+		static_cast<float>(position.x - camera.x) * zoom,
+		static_cast<float>(position.y - camera.y) * zoom,
+		TILE_SIZE * zoom,
+		TILE_SIZE * zoom
+	};
 	if (texture && texture->GetTexture()) {
-		const SDL_FRect destRect = { static_cast<float>(position.x), static_cast<float>(position.y), TILE_SIZE, TILE_SIZE};
-		texture->Render(renderer, nullptr, &destRect);
+		texture->Render(renderer, nullptr, &dst);
 	}
 }

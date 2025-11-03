@@ -26,12 +26,11 @@ int main() {
 	SDL_Log("Window Size: %dx%d", width, height);
 	Engine::Window window("Revenir", width, height);
 
-
 	bool running = true;
 	SDL_Event event;
 
 	// Main loop
-	Scene* scene = new Scene(window.GetRenderer());
+	Scene* scene = new Scene(window.GetRenderer(), width, height);
 
 	Engine::Timer timer;
 	timer.Start();
@@ -49,7 +48,7 @@ int main() {
 		window.Clear();
 
 		scene->Update(timer.GetDeltaTime());
-		scene->Render(window.GetRenderer(), width, height); // Render needs the SDL_Renderer from the window to draw
+		scene->Render(window.GetRenderer()); // Render needs the SDL_Renderer from the window to draw
 
 		window.Present();
 	}

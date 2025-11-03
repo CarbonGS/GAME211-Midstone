@@ -2,6 +2,7 @@
 #include <map>
 #include "Engine.h"
 #include "Image.h"
+#include "Camera.h"
 
 #define TILE_SIZE 32 // Size of each tile in pixels
 
@@ -46,5 +47,5 @@ public:
 	Image* texture = nullptr; // Pointer to the tile's texture
 
 	virtual void Update(Engine::Timer* deltaTime);
-	virtual void Render(SDL_Renderer* renderer) const;
+	virtual void Render(SDL_Renderer* renderer, const Camera& camera) const;
 };

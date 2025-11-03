@@ -16,9 +16,6 @@
     <Filter Include="External">
       <UniqueIdentifier>{9fa66df2-1455-4a78-8735-534fc4bfcd17}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Main Game Scene">
-      <UniqueIdentifier>{51837952-b37c-4427-8ddb-a768ff49f7fe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Tiles">
       <UniqueIdentifier>{30f92ac5-a728-45d5-9001-18ac53522be2}</UniqueIdentifier>
     </Filter>
@@ -28,22 +25,28 @@
     <Filter Include="Resource Files\Assets">
       <UniqueIdentifier>{20ddf0fe-9829-4590-ad7d-46ee63be8279}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{99d01202-c8b4-4551-8bc9-6f8173740927}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entity">
+      <UniqueIdentifier>{21983ac3-431c-494c-9d04-55fe832e0eb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{51837952-b37c-4427-8ddb-a768ff49f7fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{945d44aa-bcff-4c74-9db3-63f96e8ea220}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Texture">
+      <UniqueIdentifier>{e950ae0f-e047-4ab5-97ef-1598368ba4cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Texture">
+      <UniqueIdentifier>{4c1dfd60-2ebd-4346-928e-80133af338f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Scene.cpp">
-      <Filter>Source Files\Main Game Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\LevelDesigner.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Image.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\SpawnTile.cpp">
       <Filter>Source Files\Tiles</Filter>
@@ -57,6 +60,30 @@
     <ClCompile Include="src\Tile.cpp">
       <Filter>Source Files\Tiles</Filter>
     </ClCompile>
+    <ClCompile Include="src\Entity.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Enemy.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LevelDesigner.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Image.cpp">
+      <Filter>Source Files\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="extern\SDL3.dll">
@@ -67,18 +94,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\Engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\Image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\LevelDesigner.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="headers\Tile.h">
       <Filter>Header Files\Tiles</Filter>
     </ClInclude>
@@ -90,6 +105,30 @@
     </ClInclude>
     <ClInclude Include="headers\PlatformTile.h">
       <Filter>Header Files\Tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Entity.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Player.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\LevelDesigner.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Engine.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Scene.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Enemy.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Image.h">
+      <Filter>Header Files\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Camera.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

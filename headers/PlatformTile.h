@@ -1,5 +1,6 @@
 #pragma once
 #include "Tile.h"
+#include "Camera.h"
 
 class PlatformTile : public Tile {
 private:
@@ -9,4 +10,5 @@ public:
 	~PlatformTile() override;
 
 	void Update(Engine::Timer* deltaTime) override;
+	void Render(SDL_Renderer* renderer, const Camera& camera) const override;
 };

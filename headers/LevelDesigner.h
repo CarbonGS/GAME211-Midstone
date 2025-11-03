@@ -1,6 +1,7 @@
 #pragma once
 #include "Image.h"
 #include "Tile.h"
+#include "Camera.h"
 #include <vector>
 #include <SDL3/SDL.h>
 
@@ -13,6 +14,8 @@ public:
 	void LevelDesignerLoad(Image* levelfile);
 	void GenerateLevel(SDL_Renderer* renderer);
 	const std::vector<Tile*>& GetWorldTiles() const; // Output the generated tiles
+
+	void RenderWorld(SDL_Renderer* renderer, const Camera& camera) const;
 
 private:
 	Image* levelImage;
