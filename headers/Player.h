@@ -1,8 +1,9 @@
 #pragma once
 #include "Entity.h"
 #include "Image.h"
+#include <vector>
 
-class Camera; // Forward declaration
+class Tile;
 
 class Player : public Entity
 {
@@ -10,7 +11,9 @@ public:
 	Player(Image* playerTexture);
 	~Player() {} // Currently no dynamic resources to free
 
-	void Update(float deltaTime) override;
+	// Override base class Update for compatibility
+	void Update(float deltaTime) override { /* Overloaded version is used not this one */ }
+	void Update(float deltaTime, const std::vector<Tile*>& worldTiles);
 	void Render(SDL_Renderer* renderer, const Camera& camera) override;
 
 	void OnHit(Entity* other) override;
@@ -21,6 +24,9 @@ private:
 
 	// Movement (Physics)
 	float velX, velY;
+	bool onGround = false;
+	bool jumpRequested = false;
+	float damageCooldown = 0.0f;
 
 	// Player stats
 	int health;

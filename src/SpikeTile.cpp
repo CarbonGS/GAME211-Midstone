@@ -5,7 +5,7 @@ SpikeTile::SpikeTile(Image* spikeTexture)
 {
 	type = TILE_SPIKE;
 	texture = spikeTexture;
-	damage = 10; // Default damage value, can be adjusted as needed
+	damage = 10;
 }
 
 void SpikeTile::Update(Engine::Timer* deltaTime)

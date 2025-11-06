@@ -81,7 +81,16 @@
     <ClCompile Include="src\Image.cpp">
       <Filter>Source Files\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="headers\Collision.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
     <ClCompile Include="src\Camera.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -127,7 +136,13 @@
     <ClInclude Include="headers\Image.h">
       <Filter>Header Files\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="headers\Collision.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
     <ClInclude Include="headers\Camera.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

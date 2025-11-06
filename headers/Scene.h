@@ -27,5 +27,5 @@ public:
 	void Update(float deltaTime); // Update game logic here
 	void Render(SDL_Renderer* renderer); // Render game content here
 	void EventHandler(const SDL_Event& sdlEvent); // Handle scene-specific events here
-	void HandleCollisions(); // Handle collisions between entities here
+	void HandleCollisions(); // Handle collisions between entities here (unused until a need arises)
 };

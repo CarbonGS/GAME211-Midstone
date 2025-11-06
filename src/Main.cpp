@@ -38,6 +38,10 @@ int main() {
 
 		timer.UpdateTicks();
 
+		float deltaTime = timer.GetDeltaTime();
+		const float MAX_DELTA_TIME = 1.0f / 60.0f;
+		if (deltaTime > MAX_DELTA_TIME) deltaTime = MAX_DELTA_TIME;
+
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_EVENT_QUIT) {
 				running = false;
@@ -47,7 +51,7 @@ int main() {
 
 		window.Clear();
 
-		scene->Update(timer.GetDeltaTime());
+		scene->Update(deltaTime);
 		scene->Render(window.GetRenderer()); // Render needs the SDL_Renderer from the window to draw
 
 		window.Present();

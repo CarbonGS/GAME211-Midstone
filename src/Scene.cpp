@@ -1,11 +1,7 @@
 #include "Scene.h"
 
-/// <summary>
-/// Constructs a new Scene object.
-/// Initializes any added game content here.
-/// </summary>
 Scene::Scene(SDL_Renderer* renderer, int width, int height)
-	: camera(0, 0, width, height, 2.0f) // Example: 2x zoom
+	: camera(0, 0, width, height, 2.5f) // camera zoom is the last parameter
 {
 	levelImage = new Image();
 	levelImage->LoadSurface("assets/lvl.png");
@@ -19,6 +15,7 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height)
 	playerTexture = new Image();
 	playerTexture->LoadTexture(renderer, "assets/player.png");
 	player = new Player(playerTexture);
+	camera.zoom = 4.0f;
 
 	for (Tile* tile : levelDesigner.GetWorldTiles()) { // Set Player Spawn Position
 		if (tile->type == Tile::TILE_SPAWN) {
@@ -28,10 +25,6 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height)
 	}
 }
 
-/// <summary>
-/// Destroys the Scene object and releases any associated resources.
-/// Cleans up any added game content here.
-/// </summary>
 Scene::~Scene()
 {
 	delete levelImage;
@@ -40,16 +33,11 @@ Scene::~Scene()
 	delete player;
 }
 
-/// <summary>
-/// Updates the scene based on the elapsed time since the last update.
-/// Update game logic here.
-/// </summary>
-/// <param name="deltaTime">The time in seconds since the last update.</param>
 void Scene::Update(float deltaTime)
 {
 	// Update entities
 	if (player) {
-		player->Update(deltaTime);
+		player->Update(deltaTime, levelDesigner.GetWorldTiles());
 		// Center camera on player
 		camera.CenterOn(player->GetBounds().x + player->GetBounds().w / 2,
 			player->GetBounds().y + player->GetBounds().h / 2);
@@ -61,10 +49,6 @@ void Scene::Update(float deltaTime)
 	// Other scene updates
 }
 
-/// <summary>
-/// Renders the scene.
-/// Render game content here.
-/// </summary>
 void Scene::Render(SDL_Renderer* renderer)
 {
 	float zoom = camera.zoom;
@@ -86,12 +70,18 @@ void Scene::Render(SDL_Renderer* renderer)
 	}
 }
 
-/// <summary>
-/// Handles an SDL event within the Scene.
-/// </summary>
-/// <param name="sdlEvent">The SDL_Event object representing the event to be handled.</param>
 void Scene::EventHandler(const SDL_Event& sdlEvent)
 {
+	if (sdlEvent.type == SDL_EVENT_WINDOW_RESIZED) {
+		camera.width = sdlEvent.window.data1; // new width
+		camera.height = sdlEvent.window.data2; // new height
+		// Re-center camera on player
+		if (player) {
+			camera.CenterOn(player->GetBounds().x + player->GetBounds().w / 2,
+				player->GetBounds().y + player->GetBounds().h / 2);
+		}
+	}
+
 	if (player) {
 		player->HandleInput(sdlEvent);
 	}
@@ -99,5 +89,5 @@ void Scene::EventHandler(const SDL_Event& sdlEvent)
 
 void Scene::HandleCollisions()
 {
-
+	// Currently unused until a need arises
 }
