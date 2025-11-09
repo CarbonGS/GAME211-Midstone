@@ -1,13 +1,32 @@
 #include <Engine.h>
 #include <Scene.h>
+#include <Audio.h>
+#include <iostream>
 
 int main() {
 	// Initialize SDL Video subsystem
 	SDL_Init(SDL_INIT_VIDEO);
+	SDL_Init(SDL_INIT_AUDIO);
 
 	// Create window
 	int width;
 	int height;
+	
+	// AUDIO TEST AREA
+	//
+		// Create Audio object and load WAV
+		Audio sound("C:/Users/calam/OneDrive/Documents/file_example_WAV_1MG.wav");   // Make sure "sound.wav" exists in working directory
+
+		// Start playback
+		sound.play();
+
+		// Wait while the audio is playing
+		while (sound.isPlaying()) {
+			SDL_Delay(100);
+		}
+	
+	//
+	//
 
 #ifdef _DEBUG
 	width = 1280;

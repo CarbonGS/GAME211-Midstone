@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Audio.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\LevelDesigner.cpp" />
@@ -145,6 +146,7 @@
     <None Include="SDL3_image.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="headers\Audio.h" />
     <ClInclude Include="headers\Engine.h" />
     <ClInclude Include="headers\Image.h" />
     <ClInclude Include="headers\LevelDesigner.h" />
