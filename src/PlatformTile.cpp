@@ -11,12 +11,12 @@ PlatformTile::~PlatformTile()
 {
 }
 
-void PlatformTile::Update(Engine::Timer* deltaTime)
+void PlatformTile::Update(float deltaTime)
 {
 	// Platform tile specific update logic can be added here
 }
 
-void PlatformTile::Render(SDL_Renderer* renderer, const Camera& camera) const
+void PlatformTile::Render(SDL_Renderer* renderer, Camera& camera)
 {
 	float zoom = camera.zoom;
 	SDL_FRect dst = {

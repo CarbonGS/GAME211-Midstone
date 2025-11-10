@@ -42,7 +42,7 @@ void Player::Update(float deltaTime, const std::vector<Tile*>& worldTiles)
 	// Check collision with solid tiles
 	for (const Tile* tile : worldTiles) {
 		if (tile->type == Tile::TILE_PLATFORM) {
-			SDL_Rect tileRect = { tile->position.x, tile->position.y, TILE_SIZE, TILE_SIZE };
+			const SDL_Rect& tileRect = tile->collisionRect;
 			if (Collision::CheckAABBCollision(this->GetBounds(), tileRect)) {
 				float oldVelY = velY;
 				SDL_Rect playerRect = this->GetBounds();
@@ -57,7 +57,7 @@ void Player::Update(float deltaTime, const std::vector<Tile*>& worldTiles)
 			}
 		}
 		if (tile->type == Tile::TILE_SPIKE) {
-			SDL_Rect tileRect = { tile->position.x, tile->position.y, TILE_SIZE, TILE_SIZE };
+			const SDL_Rect& tileRect = tile->collisionRect;
 			if (Collision::CheckAABBCollision(this->GetBounds(), tileRect)) {
 				if (damageCooldown <= 0.0f) {
 					auto spike = dynamic_cast<const SpikeTile*>(tile);

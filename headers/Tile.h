@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "Image.h"
 #include "Camera.h"
+#include <SDL3/SDL.h>
 
 #define TILE_SIZE 32 // Size of each tile in pixels
 
@@ -45,7 +46,10 @@ public:
 	int type;
 	SDL_Point position; // Tile position in the grid
 	Image* texture = nullptr; // Pointer to the tile's texture
+	Image* surfaceImage = nullptr; // Pointer to the tile's surface image
+	SDL_Rect collisionRect; // Collision rectangle in world coordinates
 
-	virtual void Update(Engine::Timer* deltaTime);
-	virtual void Render(SDL_Renderer* renderer, const Camera& camera) const;
+
+	virtual void Update(float deltaTime);
+	virtual void Render(SDL_Renderer* renderer, Camera& camera);
 };

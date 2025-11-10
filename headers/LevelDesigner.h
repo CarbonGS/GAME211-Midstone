@@ -15,7 +15,8 @@ public:
 	void GenerateLevel(SDL_Renderer* renderer);
 	const std::vector<Tile*>& GetWorldTiles() const; // Output the generated tiles
 
-	void RenderWorld(SDL_Renderer* renderer, const Camera& camera) const;
+	void RenderWorld(SDL_Renderer* renderer, Camera& camera);
+	void UpdateWorldTiles(float deltaTime); // Changed to float
 
 private:
 	Image* levelImage;

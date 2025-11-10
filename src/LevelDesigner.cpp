@@ -1,10 +1,34 @@
 #include "LevelDesigner.h"
-
-// Tiles
 #include "SpikeTile.h"
 #include "SpawnTile.h"
 #include "PlatformTile.h"
 #include "Camera.h"
+#include <algorithm>
+
+// Helper: Find topmost non-transparent pixel in a surface (for spikes)
+int getTopNonTransparentPixel(SDL_Surface* surface) {
+    for (int y = 0; y < surface->h; ++y) {
+        for (int x = 0; x < surface->w; ++x) {
+            Uint32 pixel = ((Uint32*)surface->pixels)[y * surface->w + x];
+            Uint8 a;
+            SDL_GetRGBA(pixel, SDL_GetPixelFormatDetails(surface->format), nullptr, nullptr, nullptr, nullptr, &a);
+            if (a > 0) return y;
+        }
+    }
+    return 0;
+}
+// Helper: Find bottommost non-transparent pixel in a surface (for platforms)
+int getBottomNonTransparentPixel(SDL_Surface* surface) {
+    for (int y = surface->h - 1; y >= 0; --y) {
+        for (int x = 0; x < surface->w; ++x) {
+            Uint32 pixel = ((Uint32*)surface->pixels)[y * surface->w + x];
+            Uint8 a;
+            SDL_GetRGBA(pixel, SDL_GetPixelFormatDetails(surface->format), nullptr, nullptr, nullptr, nullptr, &a);
+            if (a > 0) return y;
+        }
+    }
+    return surface->h - 1;
+}
 
 LevelDesigner::LevelDesigner() : levelImage(nullptr), window(nullptr) {}
 
@@ -86,22 +110,39 @@ void LevelDesigner::InitTileTextures(SDL_Renderer* ren)
 
 void LevelDesigner::placeTile(int x, int y, int tileType)
 {
-	Tile* tile = nullptr;
-	switch (tileType) {
-		case Tile::TILE_EMPTY: tile = new Tile(); break;
-		case Tile::TILE_PLATFORM: tile = new PlatformTile(tileTextures[Tile::TILE_PLATFORM]); break;
-		case Tile::TILE_SPAWN: tile = new SpawnTile(); break;
-		case Tile::TILE_SPIKE: tile = new SpikeTile(tileTextures[Tile::TILE_SPIKE]); break;
-		default: tile = new Tile(); break; // Default to empty tile
-	}
+    Tile* tile = nullptr;
+    int worldX = x * TILE_SIZE;
+    int worldY = y * TILE_SIZE;
 
-	// Scale pixel coordinates to world coordinates
-	int worldX = x * TILE_SIZE;
-	int worldY = y * TILE_SIZE;
-
-	tile->type = tileType;
-	tile->position = { worldX, worldY };
-	tiles.push_back(tile);
+    switch (tileType) {
+        case Tile::TILE_EMPTY:
+            tile = new Tile();
+            tile->collisionRect = { worldX, worldY, TILE_SIZE, TILE_SIZE };
+            break;
+        case Tile::TILE_PLATFORM: {
+            tile = new PlatformTile(tileTextures[Tile::TILE_PLATFORM]);
+            tile->collisionRect = { worldX, worldY + 10, TILE_SIZE, TILE_SIZE - 10 };
+            break;
+        }
+        case Tile::TILE_SPAWN:
+            tile = new SpawnTile();
+            tile->collisionRect = { worldX, worldY, TILE_SIZE, TILE_SIZE };
+            break;
+        case Tile::TILE_SPIKE: {
+            auto spike = new SpikeTile(tileTextures[Tile::TILE_SPIKE]);
+            spike->SetInitialY(worldY);
+            spike->collisionRect = { worldX, worldY + 22, TILE_SIZE, 10 };
+            tile = spike;
+            break;
+        }
+        default:
+            tile = new Tile();
+            tile->collisionRect = { worldX, worldY, TILE_SIZE, TILE_SIZE };
+            break;
+    }
+    tile->type = tileType;
+    tile->position = { worldX, worldY };
+    tiles.push_back(tile);
 }
 
 int LevelDesigner::getTileTypeFromColor(SDL_Color color, SDL_Surface surface)
@@ -114,11 +155,21 @@ int LevelDesigner::getTileTypeFromColor(SDL_Color color, SDL_Surface surface)
 	return Tile::TILE_EMPTY; // Default to empty if color not found
 }
 
-void LevelDesigner::RenderWorld(SDL_Renderer* renderer, const Camera& camera) const
+void LevelDesigner::RenderWorld(SDL_Renderer* renderer, Camera& camera)
 {
 	for (Tile* tile : tiles) {
 		if (tile->type != Tile::TILE_EMPTY && tile->type != Tile::TILE_SPAWN) {
 			tile->Render(renderer, camera);
 		}
 	}
+}
+
+void LevelDesigner::UpdateWorldTiles(float deltaTime)
+{
+    for (Tile* tile : tiles) {
+        tile->Update(deltaTime);
+        if (auto spike = dynamic_cast<SpikeTile*>(tile)) {
+            spike->PhysicsUpdate(tiles, deltaTime, 900.0f);
+        }
+    }
 }

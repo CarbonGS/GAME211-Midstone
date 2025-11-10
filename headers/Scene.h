@@ -11,6 +11,7 @@ private:
 	// Main Game Content Here (e.g. game objects, player, enemies, etc.)
 	Image* levelImage;
 	Image* backgroundImage;
+	float backW, backH;
 
 	LevelDesigner levelDesigner;
 

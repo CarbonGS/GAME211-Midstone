@@ -7,12 +7,11 @@ SpawnTile::SpawnTile()
 	isActive = false;
 }
 
-void SpawnTile::Update(Engine::Timer* deltaTime)
+void SpawnTile::Update(float deltaTime)
 {
 	// Spawn tile specific update logic can be added here
 }
 
-void SpawnTile::Render(SDL_Renderer* renderer, const Camera& camera) const
-{
+void SpawnTile::Render(SDL_Renderer* renderer, Camera& camera) {
 	// Optionally render spawn marker, or leave empty
 }

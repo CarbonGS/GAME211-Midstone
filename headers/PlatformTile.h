@@ -9,6 +9,6 @@ public:
 	PlatformTile(Image* platformTexture);
 	~PlatformTile() override;
 
-	void Update(Engine::Timer* deltaTime) override;
-	void Render(SDL_Renderer* renderer, const Camera& camera) const override;
+	void Update(float deltaTime) override;
+	void Render(SDL_Renderer* renderer, Camera& camera) override;
 };
