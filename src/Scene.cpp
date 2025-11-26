@@ -5,7 +5,7 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height)
 {
 	levelImage = new Image();
 	levelImage->LoadSurface("assets/lvl.png");
-	jump = new Audio("assets/audio assets/jump.wav");
+	jump = new Audio("assets/audio/jump.wav");
 
 	backgroundImage = new Image();
 	backgroundImage->LoadTexture(renderer, "assets/background.png");
