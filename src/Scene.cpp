@@ -5,6 +5,7 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height)
 {
 	levelImage = new Image();
 	levelImage->LoadSurface("assets/lvl.png");
+	jump = new Audio("assets/audio assets/jump.wav");
 
 	backgroundImage = new Image();
 	backgroundImage->LoadTexture(renderer, "assets/background.png");
@@ -13,6 +14,8 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height)
 
 	levelDesigner.LevelDesignerLoad(levelImage);
 	levelDesigner.GenerateLevel(renderer);
+
+	
 
 	playerTexture = new Image();
 	playerTexture->LoadTexture(renderer, "assets/player.png");

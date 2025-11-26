@@ -4,6 +4,7 @@
 int main() {
 	// Initialize SDL Video subsystem
 	SDL_Init(SDL_INIT_VIDEO);
+	SDL_Init(SDL_INIT_AUDIO);
 
 	// Create window
 	int width;

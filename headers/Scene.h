@@ -4,6 +4,7 @@
 #include "LevelDesigner.h"
 #include "Player.h"
 #include "Camera.h"
+#include "Audio.h"
 
 class Scene {
 
@@ -17,6 +18,7 @@ private:
 
 	Image* playerTexture;
 	Player* player;
+	Audio* jump;
 
 	Camera camera; // Add camera as a member
 
