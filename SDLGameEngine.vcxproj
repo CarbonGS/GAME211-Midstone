@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Audio.cpp" />
     <ClCompile Include="headers\Collision.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Collision.cpp" />
@@ -152,6 +153,7 @@
     <None Include="SDL3_image.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Audio.h" />
     <ClInclude Include="headers\Camera.h" />
     <ClInclude Include="headers\Collision.h" />
     <ClInclude Include="headers\Enemy.h" />
