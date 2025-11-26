@@ -18,11 +18,16 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height)
 	levelDesigner.LevelDesignerLoad(levelImage);
 	levelDesigner.GenerateLevel(renderer);
 
-	
-
-	playerTexture = new Image();
-	playerTexture->LoadTexture(renderer, "assets/player.png");
-	player = new Player(playerTexture);
+	// Load all four player images
+	Image* idleR = new Image();
+	idleR->LoadTexture(renderer, "assets/Player_IdleR.png");
+	Image* idleL = new Image();
+	idleL->LoadTexture(renderer, "assets/Player_IdleL.png");
+	Image* runR = new Image();
+	runR->LoadTexture(renderer, "assets/Player_RunR.png");
+	Image* runL = new Image();
+	runL->LoadTexture(renderer, "assets/Player_RunL.png");
+	player = new Player(idleR, idleL, runR, runL);
 	camera.zoom = 2.0f;
 
 	for (Tile* tile : levelDesigner.GetWorldTiles()) { // Set Player Spawn Position
@@ -37,8 +42,10 @@ Scene::~Scene()
 {
 	delete levelImage;
 	delete backgroundImage;
-	delete playerTexture;
-	delete player;
+	// Delete both textures
+	if (player) {
+		delete player;
+	}
 }
 
 void Scene::Update(float deltaTime)
@@ -62,9 +69,7 @@ void Scene::Update(float deltaTime)
 
 void Scene::Render(SDL_Renderer* renderer)
 {
-	// Set Background
-	float zoom = 1.5f;
-	// Render the background (Currently only fixed background)
+	// Set Background (static, no parallax, no scaling)
 	SDL_FRect bgDestRect = { 0, 0, static_cast<float>(camera.width), static_cast<float>(camera.height) };
 	backgroundImage->Render(renderer, nullptr, &bgDestRect);
 

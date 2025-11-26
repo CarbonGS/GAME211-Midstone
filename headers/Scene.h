@@ -16,7 +16,9 @@ private:
 
 	LevelDesigner levelDesigner;
 
-	Image* playerTexture;
+	// Player Objects
+	Image* idleTexture;
+	Image* runTexture;
 	Player* player;
 	Audio* test;
 
