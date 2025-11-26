@@ -18,7 +18,7 @@ private:
 
 	Image* playerTexture;
 	Player* player;
-	Audio* jump;
+	Audio* test;
 
 	Camera camera; // Add camera as a member
 
