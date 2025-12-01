@@ -1,14 +1,11 @@
 #include "Scene.h"
+#include "Audio.h"
 
-Scene::Scene(SDL_Renderer* renderer, int width, int height)
-	: camera(0, 0, width, height, 2.5f) // camera zoom is the last parameter
+Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSystem)
+	: camera(0, 0, width, height, 2.5f), fmodSystem(fmodSystem) // camera zoom is the last float parameter in camera constructor
 {
 	levelImage = new Image();
 	levelImage->LoadSurface("assets/lvl.png");
-
-	// Debugging Audio Test
-	test = new Audio("assets/audio/Test Audio.wav");
-	test->play();
 
 	backgroundImage = new Image();
 	backgroundImage->LoadTexture(renderer, "assets/background.png");
@@ -17,8 +14,6 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height)
 
 	levelDesigner.LevelDesignerLoad(levelImage);
 	levelDesigner.GenerateLevel(renderer);
-
-	
 
 	playerTexture = new Image();
 	playerTexture->LoadTexture(renderer, "assets/player.png");
@@ -31,6 +26,10 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height)
 			break;
 		}
 	}
+
+	// This is just a test audio to see if FMOD is working properly
+	test = new Audio(fmodSystem, "assets/audio/Test Audio.wav");
+	test->play();
 }
 
 Scene::~Scene()
@@ -39,6 +38,7 @@ Scene::~Scene()
 	delete backgroundImage;
 	delete playerTexture;
 	delete player;
+	delete test;
 }
 
 void Scene::Update(float deltaTime)

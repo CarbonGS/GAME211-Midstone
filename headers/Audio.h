@@ -1,29 +1,15 @@
 #pragma once
-#include <SDL3\SDL.h>
+#include <fmod.hpp>
 #include <string>
 
 class Audio {
-
-
 public:
-	struct AudioData {
-		Uint8* pos;
-		Uint32 length;
-	};
-
-	Audio(const std::string& filename);
-
-	~Audio();
-
-	void play();
-	bool isPlaying() const;
-
+    Audio(FMOD::System* system, const std::string& filename);
+    ~Audio();
+    void play();
+    bool isPlaying() const;
 private:
-	SDL_AudioSpec wavSpec;
-	Uint8* wavBuffer = nullptr;
-	Uint32 wavLength = 0;
-	SDL_AudioDeviceID dev;
-	SDL_AudioStream* audioStream = nullptr;
-
-	AudioData audioData;
+    FMOD::System* system = nullptr;
+    FMOD::Sound* sound = nullptr;
+    FMOD::Channel* channel = nullptr;
 };

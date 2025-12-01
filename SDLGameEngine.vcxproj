@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)\extern\SDL3_image-3.2.4\include;$(ProjectDir)\extern\SDL2_mixer-2.8.1\include\SDL3_Mix;$(ProjectDir)\extern\SDL3-3.2.22\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\extern\SDL2_mixer-2.8.1\lib\x64;$(ProjectDir)\extern\SDL3_image-3.2.4\lib\x64;$(ProjectDir)\extern\SDL3-3.2.22\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\extern\SDL3_image-3.2.4\include;$(ProjectDir)\extern\FMOD\include;$(ProjectDir)\extern\SDL3-3.2.22\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\extern\FMOD\lib;$(ProjectDir)\extern\SDL3_image-3.2.4\lib\x64;$(ProjectDir)\extern\SDL3-3.2.22\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -111,8 +111,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)\extern\SDL3-3.2.22\lib\x64;$(ProjectDir)\extern\SDL2_mixer-2.8.1\lib\x64;$(ProjectDir)\extern\SDL3_image-3.2.4\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\extern\SDL3-3.2.22\lib\x64;$(ProjectDir)\extern\FMOD\lib;$(ProjectDir)\extern\SDL3_image-3.2.4\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;fmodstudioL_vc.lib;fmodstudio_vc.lib;fmodL_vc.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

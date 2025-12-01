@@ -1,10 +1,10 @@
 #include <Engine.h>
 #include <Scene.h>
+#include <fmod.hpp>
 
-int main() {
+int main(int argc, char* argv[]) {
 	// Initialize SDL Video subsystem
 	SDL_Init(SDL_INIT_VIDEO);
-	SDL_Init(SDL_INIT_AUDIO);
 
 	// Create window
 	int width;
@@ -27,11 +27,16 @@ int main() {
 	SDL_Log("Window Size: %dx%d", width, height);
 	Engine::Window window("Revenir", width, height);
 
+	// Initialize FMOD
+	FMOD::System* fmodSystem = nullptr;
+	FMOD::System_Create(&fmodSystem);
+	fmodSystem->init(512, FMOD_INIT_NORMAL, nullptr);
+
 	bool running = true;
 	SDL_Event event;
 
 	// Main loop
-	Scene* scene = new Scene(window.GetRenderer(), width, height);
+	Scene* scene = new Scene(window.GetRenderer(), width, height, fmodSystem);
 
 	Engine::Timer timer;
 	timer.Start();
@@ -59,6 +64,9 @@ int main() {
 	}
 
 	delete scene;
+
+	fmodSystem->close();
+	fmodSystem->release();
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	SDL_Quit();
 	return 0;
