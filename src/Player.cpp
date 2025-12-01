@@ -8,9 +8,12 @@ constexpr float GRAVITY = 600.0f; // pixels/sec^2
 constexpr float JUMP_VELOCITY = -500.0f; // Upward jump velocity
 constexpr float DAMAGE_COOLDOWN_TIME = 1.0f; // seconds
 
-Player::Player(Image* texture)
+Player::Player(Image* idleR, Image* idleL, Image* runR, Image* runL)
 {
-    playerTexture = texture;
+    idleRight = idleR;
+    idleLeft = idleL;
+    runRight = runR;
+    runLeft = runL;
     velX = 0;
     velY = 0;
     health = 100;
@@ -105,6 +108,21 @@ void Player::Update(float deltaTime, const std::vector<Tile*>& worldTiles)
             velX = 0;
     }
 
+    // Set running state
+    isRunning = (leftHeld || rightHeld);
+
+    // Animation update (only if running)
+    if (isRunning) {
+        frameTimer += deltaTime;
+        if (frameTimer >= frameTime) {
+            frameTimer -= frameTime;
+            currentFrame = (currentFrame + 1) % frameCount;
+        }
+    } else {
+        currentFrame = 0;
+        frameTimer = 0.0f;
+    }
+
     // Attack cooldown
     if (attackCooldown > 0) {
         attackCooldown -= deltaTime;
@@ -145,12 +163,29 @@ void Player::Render(SDL_Renderer* renderer, const Camera& camera)
     SDL_FRect dst = {
         static_cast<float>(GetBounds().x - camera.x) * zoom,
         static_cast<float>(GetBounds().y - camera.y) * zoom,
-        static_cast<float>(GetBounds().w) * zoom,
-        static_cast<float>(GetBounds().h) * zoom
+        static_cast<float>(frameWidth) * zoom,
+        static_cast<float>(frameHeight) * zoom
     };
 
-    if (playerTexture && playerTexture->GetTexture()) {
-        playerTexture->Render(renderer, nullptr, &dst);
+    if (isRunning) {
+        SDL_FRect src = {
+            static_cast<float>(currentFrame * frameWidth),
+            0.0f,
+            static_cast<float>(frameWidth),
+            static_cast<float>(frameHeight)
+        };
+        if (facingRight && runRight && runRight->GetTexture()) {
+            runRight->Render(renderer, &src, &dst);
+        } else if (!facingRight && runLeft && runLeft->GetTexture()) {
+            runLeft->Render(renderer, &src, &dst);
+        }
+    } else {
+        SDL_FRect src = { 0.0f, 0.0f, static_cast<float>(frameWidth), static_cast<float>(frameHeight) };
+        if (facingRight && idleRight && idleRight->GetTexture()) {
+            idleRight->Render(renderer, &src, &dst);
+        } else if (!facingRight && idleLeft && idleLeft->GetTexture()) {
+            idleLeft->Render(renderer, &src, &dst);
+        }
     }
 }
 
@@ -173,7 +208,7 @@ void Player::HandleInput(const SDL_Event& sdlEvent)
         {
         case SDLK_A:
             leftHeld = true;
-
+            facingRight = false; // Ensure facingLeft when A is pressed
             if (canDash && dashDir == 0) {
                 if ((timeSinceStart - lastLeftTap) < doubleTapThreshold) {
                     // Start dash
@@ -194,7 +229,7 @@ void Player::HandleInput(const SDL_Event& sdlEvent)
 
         case SDLK_D:
             rightHeld = true;
-
+            facingRight = true; // Ensure facingRight when D is pressed
             if (canDash && dashDir == 0) {
                 if ((timeSinceStart - lastRightTap) < doubleTapThreshold) {
                     // Start dash
@@ -225,18 +260,22 @@ void Player::HandleInput(const SDL_Event& sdlEvent)
         {
         case SDLK_A:
             leftHeld = false;
-            if (rightHeld)
+            if (rightHeld) {
                 velX = 200;
-            else
+                facingRight = true; // If D is still held, face right
+            } else {
                 velX = 0;
+            }
             break;
 
         case SDLK_D:
             rightHeld = false;
-            if (leftHeld)
+            if (leftHeld) {
                 velX = -200;
-            else
+                facingRight = false; // If A is still held, face left
+            } else {
                 velX = 0;
+            }
             break;
         }
     }
