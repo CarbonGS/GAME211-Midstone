@@ -19,6 +19,8 @@ public:
 	void OnHit(Entity* other) override;
 	void HandleInput(const SDL_Event& sdlEvent);
 
+	void TakeDamage(int amount); // Add this method
+
 private:
 	Image* playerTexture;
 

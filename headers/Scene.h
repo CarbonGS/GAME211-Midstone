@@ -7,6 +7,7 @@
 #include "LevelDesigner.h"
 #include "Player.h"
 #include "Camera.h"
+#include "Enemy.h"
 
 class Scene {
 
@@ -20,6 +21,9 @@ private:
 
 	Image* playerTexture;
 	Player* player;
+
+	Image* enemyTexture;
+	Enemy* enemy;
 
 	Camera camera;
 	// Test Audio

@@ -39,6 +39,15 @@ Player::Player(Image* texture)
     y = static_cast<float>(bounds.y);
 }
 
+void Player::TakeDamage(int amount)
+{
+    if (damageCooldown <= 0.0f) {
+        health -= amount;
+        damageCooldown = DAMAGE_COOLDOWN_TIME;
+        std::cout << "Player took damage! Health: " << health << std::endl;
+    }
+}
+
 void Player::Update(float deltaTime, const std::vector<Tile*>& worldTiles)
 {
     timeSinceStart += deltaTime;

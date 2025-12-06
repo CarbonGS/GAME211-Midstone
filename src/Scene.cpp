@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Audio.h"
+#include "Enemy.h"
 
 Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSystem)
 	: camera(0, 0, width, height, 2.5f), fmodSystem(fmodSystem) // camera zoom is the last float parameter in camera constructor
@@ -27,6 +28,16 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSy
 		}
 	}
 
+	// Enemy setup
+	enemyTexture = new Image();
+	enemyTexture->LoadTexture(renderer, "assets/tiles/spike.png");
+	enemy = new Enemy(enemyTexture);
+	// Spawn enemy behind player
+	if (player) {
+		SDL_Rect pBounds = player->GetBounds();
+		enemy->SetPositionSync(static_cast<float>(pBounds.x - 64), static_cast<float>(pBounds.y));
+	}
+
 	// This is just a test audio to see if FMOD is working properly
 	test = new Audio(fmodSystem, "assets/audio/Test Audio.wav");
 	test->play();
@@ -38,6 +49,8 @@ Scene::~Scene()
 	delete backgroundImage;
 	delete playerTexture;
 	delete player;
+	delete enemyTexture;
+	delete enemy;
 	delete test;
 }
 
@@ -53,7 +66,9 @@ void Scene::Update(float deltaTime)
 		camera.CenterOn(player->GetBounds().x + player->GetBounds().w / 2,
 			player->GetBounds().y + player->GetBounds().h / 2);
 	}
-
+	if (enemy && player) {
+		enemy->UpdateAIWithCollision(deltaTime, player->GetBounds().x, player->GetBounds().y, levelDesigner.GetWorldTiles());
+	}
 	// Check Collisions
 	HandleCollisions();
 
@@ -80,42 +95,44 @@ void Scene::Render(SDL_Renderer* renderer)
 	if (player) {
 		player->Render(renderer, camera);
 	}
+	if (enemy) {
+		enemy->Render(renderer, camera);
+	}
 
 	// Debugging: Render collision boxes
-	// Set color for tile collision boxes (e.g., red)
-	//SDL_SetRenderDrawColor(renderer, 255, 0, 0, 128);
-	//for (const Tile* tile : worldTiles) {
-	//	if (tile->type != Tile::TILE_EMPTY) {
-	//		SDL_FRect rect = {
-	//			(float)tile->collisionRect.x - camera.x,
-	//			(float)tile->collisionRect.y - camera.y,
-	//			(float)tile->collisionRect.w,
-	//			(float)tile->collisionRect.h
-	//		};
-	//		// Apply camera zoom if needed
-	//		rect.x *= camera.zoom;
-	//		rect.y *= camera.zoom;
-	//		rect.w *= camera.zoom;
-	//		rect.h *= camera.zoom;
-	//		SDL_RenderRect(renderer, &rect);
-	//	}
-	//}
-	//// Set color for player collision box
-	//SDL_SetRenderDrawColor(renderer, 0, 255, 0, 128);
-	//SDL_Rect playerRect = player->GetBounds();
-	//SDL_FRect playerFRect = {
-	//	(float)playerRect.x - camera.x,
-	//	(float)playerRect.y - camera.y,
-	//	(float)playerRect.w,
-	//	(float)playerRect.h
-	//};
-	//playerFRect.x *= camera.zoom;
-	//playerFRect.y *= camera.zoom;
-	//playerFRect.w *= camera.zoom;
-	//playerFRect.h *= camera.zoom;
-	//SDL_RenderRect(renderer, &playerFRect);
+	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 128);
+	for (const Tile* tile : worldTiles) {
+		if (tile->type != Tile::TILE_EMPTY) {
+			SDL_FRect rect = {
+				(float)tile->collisionRect.x - camera.x,
+				(float)tile->collisionRect.y - camera.y,
+				(float)tile->collisionRect.w,
+				(float)tile->collisionRect.h
+			};
+			// Apply camera zoom if needed
+			rect.x *= camera.zoom;
+			rect.y *= camera.zoom;
+			rect.w *= camera.zoom;
+			rect.h *= camera.zoom;
+			SDL_RenderRect(renderer, &rect);
+		}
+	}
+	// Set color for player collision box
+	SDL_SetRenderDrawColor(renderer, 0, 255, 0, 128);
+	SDL_Rect playerRect = player->GetBounds();
+	SDL_FRect playerFRect = {
+		(float)playerRect.x - camera.x,
+		(float)playerRect.y - camera.y,
+		(float)playerRect.w,
+		(float)playerRect.h
+	};
+	playerFRect.x *= camera.zoom;
+	playerFRect.y *= camera.zoom;
+	playerFRect.w *= camera.zoom;
+	playerFRect.h *= camera.zoom;
+	SDL_RenderRect(renderer, &playerFRect);
 
-	//SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }
 
 void Scene::EventHandler(const SDL_Event& sdlEvent)
@@ -137,5 +154,15 @@ void Scene::EventHandler(const SDL_Event& sdlEvent)
 
 void Scene::HandleCollisions()
 {
-	// Currently unused until a need arises
+	if (player && enemy) {
+		SDL_Rect pRect = player->GetBounds();
+		SDL_Rect eRect = enemy->GetBounds();
+		if (SDL_HasRectIntersection(&pRect, &eRect)) {
+			// Enemy attacks at intervals, not every frame
+			if (enemy->attackCooldown <= 0.0f) {
+				player->TakeDamage(10); // Damage value can be adjusted
+				enemy->attackCooldown = enemy->attackInterval;
+			}
+		}
+	}
 }
