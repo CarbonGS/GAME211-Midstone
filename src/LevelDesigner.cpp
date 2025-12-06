@@ -56,33 +56,57 @@ void LevelDesigner::LevelDesignerLoad(Image* levelfile) // Ensure the image is l
 
 void LevelDesigner::GenerateLevel(SDL_Renderer* renderer)
 {
-	SDL_Surface* surface = levelImage->GetSurface();
-	const SDL_PixelFormatDetails* formatDetails = SDL_GetPixelFormatDetails(surface->format);
-	InitColorMap(formatDetails);
-	InitTileTextures(renderer);
+    SDL_Surface* surface = levelImage->GetSurface();
+    const SDL_PixelFormatDetails* formatDetails = SDL_GetPixelFormatDetails(surface->format);
+    InitColorMap(formatDetails);
+    InitTileTextures(renderer);
 
-	if (!surface) {
-		SDL_Log("Level image surface is null.");
-		return;
-	}
+    if (!surface) {
+        SDL_Log("Level image surface is null.");
+        return;
+    }
 
-	if (SDL_MUSTLOCK(surface)) SDL_LockSurface(surface);
+    if (SDL_MUSTLOCK(surface)) SDL_LockSurface(surface);
 
-	Uint32* pixels = (Uint32*)surface->pixels; // Gets pixels from the surface
-	int width = surface->w;
-	int height = surface->h;
+    Uint32* pixels = (Uint32*)surface->pixels;
+    int width = surface->w;
+    int height = surface->h;
 
-	// Iterate over each pixel in the image
-	for (int y = 0; y < height; ++y) {
-		for (int x = 0; x < width; ++x) {
-			Uint32 pixel = pixels[y * width + x];
-			SDL_Color color;
-			SDL_GetRGB(pixel, formatDetails, nullptr, &color.r, &color.g, &color.b);
-			int tileType = getTileTypeFromColor(color, *surface); // Determine tile type based on color
-			placeTile(x, y, tileType); // Place the tile in the game world
-		}
-	}
-	if (SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
+    // Build a 2D map of tile types for neighbor checks
+    std::vector<std::vector<int>> tileTypeMap(height, std::vector<int>(width, Tile::TILE_EMPTY));
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            Uint32 pixel = pixels[y * width + x];
+            SDL_Color color;
+            SDL_GetRGB(pixel, formatDetails, nullptr, &color.r, &color.g, &color.b);
+            int tileType = getTileTypeFromColor(color, *surface);
+            tileTypeMap[y][x] = tileType;
+        }
+    }
+
+    // Place tiles using the map and orientation logic
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int tileType = tileTypeMap[y][x];
+            int worldX = x * TILE_SIZE;
+            int worldY = y * TILE_SIZE;
+            if (tileType == Tile::TILE_PLATFORM) {
+                PlatformTileType type = GetPlatformTileType(x, y, tileTypeMap);
+                PlatformTile* tile = new PlatformTile(type, renderer);
+                tile->position = { worldX, worldY };
+                tile->type = tileType;
+                if (type == TILE_MM) {
+                    tile->collisionRect = { worldX, worldY, TILE_SIZE, TILE_SIZE };
+                } else {
+                    tile->collisionRect = { worldX + 8, worldY + 8, TILE_SIZE - 16, TILE_SIZE - 16 };
+                }
+                tiles.push_back(tile);
+            } else {
+                placeTile(x, y, tileType); // Use your existing logic for other tile types
+            }
+        }
+    }
+    if (SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
 }
 
 const std::vector<Tile*>& LevelDesigner::GetWorldTiles() const
@@ -102,10 +126,10 @@ void LevelDesigner::InitColorMap(const SDL_PixelFormatDetails* format)
 void LevelDesigner::InitTileTextures(SDL_Renderer* ren)
 {
 	tileTextures[Tile::TILE_PLATFORM] = new Image();
-	tileTextures[Tile::TILE_PLATFORM]->LoadTexture(ren, "assets/platform.png");
+	tileTextures[Tile::TILE_PLATFORM]->LoadTexture(ren, "assets/tiles/tile_BM.png");
 
 	tileTextures[Tile::TILE_SPIKE] = new Image();
-	tileTextures[Tile::TILE_SPIKE]->LoadTexture(ren, "assets/spike.png");
+	tileTextures[Tile::TILE_SPIKE]->LoadTexture(ren, "assets/tiles/spike.png");
 }
 
 void LevelDesigner::placeTile(int x, int y, int tileType)
@@ -119,11 +143,6 @@ void LevelDesigner::placeTile(int x, int y, int tileType)
             tile = new Tile();
             tile->collisionRect = { worldX, worldY, TILE_SIZE, TILE_SIZE };
             break;
-        case Tile::TILE_PLATFORM: {
-            tile = new PlatformTile(tileTextures[Tile::TILE_PLATFORM]);
-            tile->collisionRect = { worldX, worldY + 10, TILE_SIZE, TILE_SIZE - 10 };
-            break;
-        }
         case Tile::TILE_SPAWN:
             tile = new SpawnTile();
             tile->collisionRect = { worldX, worldY, TILE_SIZE, TILE_SIZE };
@@ -172,4 +191,33 @@ void LevelDesigner::UpdateWorldTiles(float deltaTime)
             spike->PhysicsUpdate(tiles, deltaTime, 900.0f);
         }
     }
+}
+
+PlatformTileType LevelDesigner::GetPlatformTileType(int x, int y, const std::vector<std::vector<int>>& map) {
+    auto isEmpty = [&](int nx, int ny) {
+        if (ny < 0 || ny >= (int)map.size() || nx < 0 || nx >= (int)map[0].size()) return true;
+        return map[ny][nx] != Tile::TILE_PLATFORM;
+    };
+    bool emptyUp    = isEmpty(x, y-1);
+    bool emptyDown  = isEmpty(x, y+1);
+    bool emptyLeft  = isEmpty(x-1, y);
+    bool emptyRight = isEmpty(x+1, y);
+
+    // Corners: grass faces empty
+    if (emptyUp && emptyLeft) return TILE_TL; // Top left corner
+    if (emptyUp && emptyRight) return TILE_TR; // Top right corner
+    if (emptyDown && emptyLeft) return TILE_BL; // Bottom left corner
+    if (emptyDown && emptyRight) return TILE_BR; // Bottom right corner
+
+    // Edges: grass faces empty
+    if (emptyUp) return TILE_BM; // Bottom edge
+    if (emptyDown) return TILE_TM; // Top edge
+    if (emptyLeft) return TILE_ML; // Left edge
+    if (emptyRight) return TILE_MR; // Right edge
+
+	// Extra case: default to MU if surrounded on three sides
+    if (emptyUp && !emptyDown && !emptyLeft && !emptyRight) return TILE_MU;
+
+    // Center (surrounded by platforms)
+    return TILE_MM;
 }

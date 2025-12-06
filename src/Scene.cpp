@@ -83,39 +83,39 @@ void Scene::Render(SDL_Renderer* renderer)
 
 	// Debugging: Render collision boxes
 	// Set color for tile collision boxes (e.g., red)
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 128);
-	for (const Tile* tile : worldTiles) {
-		if (tile->type != Tile::TILE_EMPTY) {
-			SDL_FRect rect = {
-				(float)tile->collisionRect.x - camera.x,
-				(float)tile->collisionRect.y - camera.y,
-				(float)tile->collisionRect.w,
-				(float)tile->collisionRect.h
-			};
-			// Apply camera zoom if needed
-			rect.x *= camera.zoom;
-			rect.y *= camera.zoom;
-			rect.w *= camera.zoom;
-			rect.h *= camera.zoom;
-			SDL_RenderRect(renderer, &rect);
-		}
-	}
-	// Set color for player collision box
-	SDL_SetRenderDrawColor(renderer, 0, 255, 0, 128);
-	SDL_Rect playerRect = player->GetBounds();
-	SDL_FRect playerFRect = {
-		(float)playerRect.x - camera.x,
-		(float)playerRect.y - camera.y,
-		(float)playerRect.w,
-		(float)playerRect.h
-	};
-	playerFRect.x *= camera.zoom;
-	playerFRect.y *= camera.zoom;
-	playerFRect.w *= camera.zoom;
-	playerFRect.h *= camera.zoom;
-	SDL_RenderRect(renderer, &playerFRect);
+	//SDL_SetRenderDrawColor(renderer, 255, 0, 0, 128);
+	//for (const Tile* tile : worldTiles) {
+	//	if (tile->type != Tile::TILE_EMPTY) {
+	//		SDL_FRect rect = {
+	//			(float)tile->collisionRect.x - camera.x,
+	//			(float)tile->collisionRect.y - camera.y,
+	//			(float)tile->collisionRect.w,
+	//			(float)tile->collisionRect.h
+	//		};
+	//		// Apply camera zoom if needed
+	//		rect.x *= camera.zoom;
+	//		rect.y *= camera.zoom;
+	//		rect.w *= camera.zoom;
+	//		rect.h *= camera.zoom;
+	//		SDL_RenderRect(renderer, &rect);
+	//	}
+	//}
+	//// Set color for player collision box
+	//SDL_SetRenderDrawColor(renderer, 0, 255, 0, 128);
+	//SDL_Rect playerRect = player->GetBounds();
+	//SDL_FRect playerFRect = {
+	//	(float)playerRect.x - camera.x,
+	//	(float)playerRect.y - camera.y,
+	//	(float)playerRect.w,
+	//	(float)playerRect.h
+	//};
+	//playerFRect.x *= camera.zoom;
+	//playerFRect.y *= camera.zoom;
+	//playerFRect.w *= camera.zoom;
+	//playerFRect.h *= camera.zoom;
+	//SDL_RenderRect(renderer, &playerFRect);
 
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	//SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }
 
 void Scene::EventHandler(const SDL_Event& sdlEvent)

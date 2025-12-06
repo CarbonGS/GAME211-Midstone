@@ -1,33 +1,36 @@
 #pragma once
 #include "Image.h"
 #include "Tile.h"
-#include "Camera.h"
 #include <vector>
+#include <map>
 #include <SDL3/SDL.h>
+#include "PlatformTile.h"
+
+class Camera;
 
 class LevelDesigner {
 public:
-	LevelDesigner();
-	~LevelDesigner();
+    LevelDesigner();
+    ~LevelDesigner();
 
-	void InitTileTextures(SDL_Renderer* renderer); // Initialize tile textures
-	void LevelDesignerLoad(Image* levelfile);
-	void GenerateLevel(SDL_Renderer* renderer);
-	const std::vector<Tile*>& GetWorldTiles() const; // Output the generated tiles
+    void LevelDesignerLoad(Image* levelfile);
+    void GenerateLevel(SDL_Renderer* renderer);
+    const std::vector<Tile*>& GetWorldTiles() const;
+    void RenderWorld(SDL_Renderer* renderer, Camera& camera);
+    void UpdateWorldTiles(float deltaTime);
 
-	void RenderWorld(SDL_Renderer* renderer, Camera& camera);
-	void UpdateWorldTiles(float deltaTime); // Changed to float
+    // Helper for platform tile orientation
+    PlatformTileType GetPlatformTileType(int x, int y, const std::vector<std::vector<int>>& map);
 
 private:
-	Image* levelImage;
-	Engine::Window* window; // Pointer to the main window for rendering
+    Image* levelImage;
+    SDL_Window* window;
+    std::map<int, Image*> tileTextures;
+    std::map<Uint32, int> colorToTileMap;
+    std::vector<Tile*> tiles;
 
-	std::map<Uint32, Tile::TileType> colorToTileMap; // Map to hold color to tile type mapping
-	void InitColorMap(const SDL_PixelFormatDetails* format); // Initialize the color to tile type map
-
-	std::map<Tile::TileType, Image*> tileTextures; // Map to hold tile type to texture mapping
-
-	void placeTile(int x, int y, int tileType); // Place a tile at the given coordinates
-	int getTileTypeFromColor(SDL_Color color, SDL_Surface surface); // Get tile type based on color
-	std::vector<Tile*> tiles; // Vector to hold all the tiles in the world
+    void InitColorMap(const SDL_PixelFormatDetails* format);
+    void InitTileTextures(SDL_Renderer* ren);
+    void placeTile(int x, int y, int tileType);
+    int getTileTypeFromColor(SDL_Color color, SDL_Surface surface);
 };
