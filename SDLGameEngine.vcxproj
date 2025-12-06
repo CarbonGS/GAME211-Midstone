@@ -147,6 +147,7 @@
     <ClCompile Include="src\SpawnTile.cpp" />
     <ClCompile Include="src\SpikeTile.cpp" />
     <ClCompile Include="src\Tile.cpp" />
+    <ClCompile Include="src\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extern\SDL3.dll" />
@@ -168,6 +169,7 @@
     <ClInclude Include="headers\SpawnTile.h" />
     <ClInclude Include="headers\SpikeTile.h" />
     <ClInclude Include="headers\Tile.h" />
+    <ClInclude Include="headers\UI.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\background.png" />

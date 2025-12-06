@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Camera.h"
 #include "Audio.h"
+#include "UI.h"
 
 class Scene {
 

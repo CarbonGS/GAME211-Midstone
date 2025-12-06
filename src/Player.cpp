@@ -119,8 +119,13 @@ void Player::Update(float deltaTime, const std::vector<Tile*>& worldTiles)
             currentFrame = (currentFrame + 1) % frameCount;
         }
     } else {
-        currentFrame = 0;
-        frameTimer = 0.0f;
+        frameTimer += deltaTime;
+        if (frameTimer >= frameTime) {
+            frameTimer -= frameTime;
+            currentFrame = (currentFrame + 1) % frameCount;
+        }
+        //currentFrame = 0;
+        //frameTimer = 0.0f;
     }
 
     // Attack cooldown
@@ -180,7 +185,13 @@ void Player::Render(SDL_Renderer* renderer, const Camera& camera)
             runLeft->Render(renderer, &src, &dst);
         }
     } else {
-        SDL_FRect src = { 0.0f, 0.0f, static_cast<float>(frameWidth), static_cast<float>(frameHeight) };
+        //SDL_FRect src = { 0.0f, 0.0f, static_cast<float>(frameWidth), static_cast<float>(frameHeight) };
+        SDL_FRect src = {
+            static_cast<float>(currentFrame * frameWidth),
+            0.0f,
+            static_cast<float>(frameWidth),
+            static_cast<float>(frameHeight) 
+        };
         if (facingRight && idleRight && idleRight->GetTexture()) {
             idleRight->Render(renderer, &src, &dst);
         } else if (!facingRight && idleLeft && idleLeft->GetTexture()) {
