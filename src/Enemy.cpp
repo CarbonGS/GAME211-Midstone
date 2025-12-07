@@ -15,9 +15,9 @@ constexpr float ENEMY_ATTACK_INTERVAL = 1.0f; // seconds
 constexpr int ENEMY_ATTACK_DAMAGE = 10;
 constexpr float ENEMY_STUCK_THRESHOLD = 0.5f; // seconds
 constexpr float ENEMY_STUCK_X_DIST = 4.0f; // px
-constexpr float ENEMY_TP_X_DIST = 600.0f; // px, teleport if farther than this
+constexpr float ENEMY_TP_X_DIST = 400.0f; // px, teleport if farther than this
 constexpr float ENEMY_TP_Y_DIST = 200.0f; // px, must be within this Y dist to count as close
-constexpr float ENEMY_TP_Y_TIMEOUT = 3.0f; // seconds, if not close on Y for this long, teleport
+constexpr float ENEMY_TP_Y_TIMEOUT = 1.0f; // seconds, if not close on Y for this long, teleport
 constexpr float ENEMY_INVISIBLE_TIME = 1.0f; // seconds
 
 static float CenterX(const SDL_Rect& r) { return r.x + r.w / 2.0f; }
@@ -40,6 +40,7 @@ Enemy::Enemy(Image* texture)
 	isInvisible = false;
 	invisibleTimer = 0.0f;
 	lastCloseToPlayerTime = 0.0f;
+	knockbackTimer = 0.0f;
 }
 
 Enemy::~Enemy() {}
@@ -57,6 +58,55 @@ void Enemy::UpdateAIWithCollision(float deltaTime, float playerX, float playerY,
 			std::cout << "Enemy reappeared!" << std::endl;
 		}
 		return; // Skip all other logic while invisible
+	}
+
+	// Knockback logic 
+	if (knockbackTimer > 0.0f) {
+		knockbackTimer -= deltaTime;
+		// Only apply gravity and movement, skip AI
+		velY += ENEMY_GRAVITY * deltaTime;
+		x += velX * deltaTime;
+		bounds.x = static_cast<int>(x);
+		// Horizontal collision
+		for (const Tile* tile : worldTiles) {
+			if (tile->type == Tile::TILE_PLATFORM) {
+				const SDL_Rect& tileRect = tile->collisionRect;
+				if (Collision::CheckAABBCollision(this->GetBounds(), tileRect)) {
+					if (velX > 0) {
+						x = static_cast<float>(tileRect.x - bounds.w);
+						velX = 0;
+					} else if (velX < 0) {
+						x = static_cast<float>(tileRect.x + tileRect.w);
+						velX = 0;
+					}
+					bounds.x = static_cast<int>(x);
+				}
+			}
+		}
+		y += velY * deltaTime;
+		bounds.y = static_cast<int>(y);
+		onGround = false;
+		for (const Tile* tile : worldTiles) {
+			const SDL_Rect& tileRect = tile->collisionRect;
+			if (Collision::CheckAABBCollision(this->GetBounds(), tileRect)) {
+				if (tile->type == Tile::TILE_PLATFORM) {
+					if (velY > 0) {
+						y = static_cast<float>(tileRect.y - bounds.h);
+						velY = 0;
+						onGround = true;
+					}
+					else if (velY < 0) {
+						y = static_cast<float>(tileRect.y + tileRect.h);
+						velY = 0;
+					}
+					bounds.y = static_cast<int>(y);
+				}
+			}
+		}
+		if (knockbackTimer <= 0.0f) {
+			velX = 0.0f;
+		}
+		return;
 	}
 
 	// Teleport if too far on X
@@ -129,8 +179,8 @@ void Enemy::UpdateAIWithCollision(float deltaTime, float playerX, float playerY,
 		velX = 0.0f;
 	}
 
-	// Simple jump if player is above and enemy is on ground (use normal jump velocity)
-	if (playerY + 8 < y && onGround) {
+	// Always jump when on ground
+	if (onGround) {
 		velY = ENEMY_JUMP_VELOCITY;
 		onGround = false;
 	}
@@ -198,4 +248,11 @@ void Enemy::Render(SDL_Renderer* renderer, const Camera& camera)
 void Enemy::OnHit(Entity* other)
 {
 	// No-op for now
+}
+
+void Enemy::ApplyKnockback(float vx)
+{
+	velX = vx;
+	knockbackTimer = knockbackDuration;
+	std::cout << "Enemy knocked back!" << std::endl;
 }

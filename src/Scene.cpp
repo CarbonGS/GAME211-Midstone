@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "Audio.h"
 #include "Enemy.h"
+#include <iostream>
 
 Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSystem)
 	: camera(0, 0, width, height, 2.5f), fmodSystem(fmodSystem) // camera zoom is the last float parameter in camera constructor
@@ -37,10 +38,7 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSy
 		SDL_Rect pBounds = player->GetBounds();
 		enemy->SetPositionSync(static_cast<float>(pBounds.x - 64), static_cast<float>(pBounds.y));
 	}
-
-	// This is just a test audio to see if FMOD is working properly
 	test = new Audio(fmodSystem, "assets/audio/Test Audio.wav");
-	test->play();
 }
 
 Scene::~Scene()
@@ -56,6 +54,7 @@ Scene::~Scene()
 
 void Scene::Update(float deltaTime)
 {
+	if (gameFinished) return;
 	// Update world tiles (physics for spikes, etc.)
 	levelDesigner.UpdateWorldTiles(deltaTime);
 
@@ -65,13 +64,58 @@ void Scene::Update(float deltaTime)
 		// Center camera on player
 		camera.CenterOn(player->GetBounds().x + player->GetBounds().w / 2,
 			player->GetBounds().y + player->GetBounds().h / 2);
+		// End game if player HP is zero or less
+		if (player->GetHealth() <= 0) {
+			gameFinished = true;
+			std::cout << "Player died! Game Over." << std::endl;
+			return;
+		}
 	}
 	if (enemy && player) {
 		enemy->UpdateAIWithCollision(deltaTime, player->GetBounds().x, player->GetBounds().y, levelDesigner.GetWorldTiles());
 	}
+
+	// Player Attack/Enemy Knockback
+	if (player && enemy && player->IsAttacking() && !enemy->IsInvisible()) {
+		// Get centers
+		SDL_Rect pRect = player->GetBounds();
+		SDL_Rect eRect = enemy->GetBounds();
+		float playerCenterX = pRect.x + pRect.w / 2.0f;
+		float playerCenterY = pRect.y + pRect.h / 2.0f;
+		float enemyCenterX = eRect.x + eRect.w / 2.0f;
+		float enemyCenterY = eRect.y + eRect.h / 2.0f;
+		float dx = enemyCenterX - playerCenterX;
+		float dy = std::abs(enemyCenterY - playerCenterY);
+		float range = 48.0f;
+		float verticalRange = pRect.h;
+		bool inRange = false;
+		if (player->GetAttackDirection() == -1) { // left
+			inRange = (dx < 0 && std::abs(dx) < range && dy < verticalRange);
+		} else if (player->GetAttackDirection() == 1) { // right
+			inRange = (dx > 0 && std::abs(dx) < range && dy < verticalRange);
+		}
+		if (inRange) {
+			float knockbackVel = (player->GetAttackDirection() == -1) ? -300.0f : 300.0f;
+			enemy->ApplyKnockback(knockbackVel);
+			enemy->OnHit(player);
+		}
+	}
+
 	// Check Collisions
 	HandleCollisions();
 
+	// Check for finish line
+	SDL_Rect playerRect = player->GetBounds();
+	for (const Tile* tile : levelDesigner.GetWorldTiles()) {
+		if (tile->type == Tile::TILE_FINISH) {
+			if (SDL_HasRectIntersection(&playerRect, &tile->collisionRect)) {
+				test->play();
+				gameFinished = true;
+				std::cout << "You reached the finish line! Game Over." << std::endl;
+				break;
+			}
+		}
+	}
 	// Other scene updates
 }
 
@@ -147,6 +191,14 @@ void Scene::EventHandler(const SDL_Event& sdlEvent)
 		}
 	}
 
+	// --- Player Attack Input ---
+	if (sdlEvent.type == SDL_EVENT_MOUSE_BUTTON_DOWN && sdlEvent.button.button == SDL_BUTTON_LEFT) {
+		int mx = sdlEvent.button.x;
+		int winW = camera.width;
+		int direction = (mx < winW / 2) ? -1 : 1;
+		if (player) player->Attack(direction);
+	}
+
 	if (player) {
 		player->HandleInput(sdlEvent);
 	}
@@ -157,10 +209,10 @@ void Scene::HandleCollisions()
 	if (player && enemy) {
 		SDL_Rect pRect = player->GetBounds();
 		SDL_Rect eRect = enemy->GetBounds();
-		if (SDL_HasRectIntersection(&pRect, &eRect)) {
+		if (SDL_HasRectIntersection(&pRect, &eRect) && !enemy->IsInvisible()) {
 			// Enemy attacks at intervals, not every frame
 			if (enemy->attackCooldown <= 0.0f) {
-				player->TakeDamage(10); // Damage value can be adjusted
+				player->TakeDamage(10);
 				enemy->attackCooldown = enemy->attackInterval;
 			}
 		}

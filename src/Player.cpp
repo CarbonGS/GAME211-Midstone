@@ -6,7 +6,7 @@
 #include <iostream>
 
 constexpr float GRAVITY = 600.0f; // pixels/sec^2
-constexpr float JUMP_VELOCITY = -500.0f; // Upward jump velocity
+constexpr float JUMP_VELOCITY = -400.0f; // Upward jump velocity
 constexpr float DAMAGE_COOLDOWN_TIME = 1.0f; // seconds
 
 Player::Player(Image* texture)
@@ -19,8 +19,6 @@ Player::Player(Image* texture)
     onGround = false;
     jumpRequested = false;
     damageCooldown = 0.0f;
-
-    // Assuming other necessary variables are initialized here
     dashTimer = 0.0f;
     dashCooldown = 0.0f;
     dashDir = 0;
@@ -37,6 +35,9 @@ Player::Player(Image* texture)
     bounds = { 0, 0, 32, 32 };
     x = static_cast<float>(bounds.x);
     y = static_cast<float>(bounds.y);
+    // Attack state
+    attackTimer = 0.0f;
+    attackDir = 0;
 }
 
 void Player::TakeDamage(int amount)
@@ -52,11 +53,25 @@ void Player::Update(float deltaTime, const std::vector<Tile*>& worldTiles)
 {
     timeSinceStart += deltaTime;
 
-    // --- Cooldowns and Input Handling ---
+    // Cooldowns and Input Handling
     if (damageCooldown > 0.0f) {
         damageCooldown -= deltaTime;
         if (damageCooldown < 0.0f)
             damageCooldown = 0.0f;
+    }
+
+    // Attack Timer
+    if (attackTimer > 0.0f) {
+        attackTimer -= deltaTime;
+        if (attackTimer <= 0.0f) {
+            attackTimer = 0.0f;
+            attackDir = 0;
+        }
+    }
+    if (attackCooldown > 0.0f) {
+        attackCooldown -= deltaTime;
+        if (attackCooldown < 0.0f)
+            attackCooldown = 0.0f;
     }
 
     // Handle jump input
@@ -229,7 +244,7 @@ void Player::HandleInput(const SDL_Event& sdlEvent)
                     dashDir = -1;
                     dashTimer = dashDuration;
                     canDash = false;
-                    dashCooldown = 3.0f;
+                    dashCooldown = 1.5f;
                     lastLeftTap = -10000.0f;
                 }
                 else {
@@ -250,7 +265,7 @@ void Player::HandleInput(const SDL_Event& sdlEvent)
                     dashDir = 1;
                     dashTimer = dashDuration;
                     canDash = false;
-                    dashCooldown = 3.0f;
+                    dashCooldown = 1.5f;
                     lastRightTap = -10000.0f;
                 }
                 else {
@@ -281,4 +296,13 @@ void Player::HandleInput(const SDL_Event& sdlEvent)
             break;
         }
     }
+}
+
+void Player::Attack(int direction)
+{
+    if (!CanAttack()) return;
+    attackDir = direction;
+    attackTimer = attackDuration;
+    attackCooldown = 0.3f; // Cooldown between attacks
+    std::cout << "Player attack! Direction: " << (direction == -1 ? "Left" : "Right") << std::endl;
 }

@@ -19,7 +19,14 @@ public:
 	void OnHit(Entity* other) override;
 	void HandleInput(const SDL_Event& sdlEvent);
 
-	void TakeDamage(int amount); // Add this method
+	void TakeDamage(int amount);
+	int GetHealth() const { return health; }
+
+	// --- Attack ---
+	bool CanAttack() const { return attackCooldown <= 0.0f; }
+	void Attack(int direction); // -1: left, 1: right
+	bool IsAttacking() const { return attackTimer > 0.0f; }
+	int GetAttackDirection() const { return attackDir; }
 
 private:
 	Image* playerTexture;
@@ -46,5 +53,11 @@ private:
 	// Player stats
 	int health;
 	float attackCooldown;
+
+	// Attack state
+	float attackTimer = 0.0f; // How long attack is active
+	int attackDir = 0; // -1: left, 1: right
+	const float attackDuration = 0.15f; // seconds
+	const float attackRange = 48.0f; // px
 };
 

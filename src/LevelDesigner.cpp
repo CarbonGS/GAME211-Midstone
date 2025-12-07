@@ -2,6 +2,7 @@
 #include "SpikeTile.h"
 #include "SpawnTile.h"
 #include "PlatformTile.h"
+#include "FinishTile.h"
 #include "Camera.h"
 #include <algorithm>
 
@@ -121,6 +122,7 @@ void LevelDesigner::InitColorMap(const SDL_PixelFormatDetails* format)
 	colorToTileMap[SDL_MapRGB(format, nullptr,0, 0, 0)] = Tile::TILE_PLATFORM; // Black - Platform
 	colorToTileMap[SDL_MapRGB(format, nullptr,0, 255, 0)] = Tile::TILE_SPAWN; // Green - Spawn Point
 	colorToTileMap[SDL_MapRGB(format, nullptr,255, 0, 0)] = Tile::TILE_SPIKE; // Red - Spike Hazard
+	colorToTileMap[SDL_MapRGB(format, nullptr,0, 0, 255)] = Tile::TILE_FINISH; // Blue - Finish Line
 }
 
 void LevelDesigner::InitTileTextures(SDL_Renderer* ren)
@@ -130,6 +132,9 @@ void LevelDesigner::InitTileTextures(SDL_Renderer* ren)
 
 	tileTextures[Tile::TILE_SPIKE] = new Image();
 	tileTextures[Tile::TILE_SPIKE]->LoadTexture(ren, "assets/tiles/spike.png");
+
+	tileTextures[Tile::TILE_FINISH] = new Image();
+	tileTextures[Tile::TILE_FINISH]->LoadTexture(ren, "assets/tiles/finish.png"); // Add a finish.png image
 }
 
 void LevelDesigner::placeTile(int x, int y, int tileType)
@@ -152,6 +157,12 @@ void LevelDesigner::placeTile(int x, int y, int tileType)
             spike->SetInitialY(worldY);
             spike->collisionRect = { worldX, worldY + 22, TILE_SIZE, 10 };
             tile = spike;
+            break;
+        }
+        case Tile::TILE_FINISH: {
+            auto finish = new FinishTile(tileTextures[Tile::TILE_FINISH]);
+            finish->collisionRect = { worldX, worldY, TILE_SIZE, TILE_SIZE };
+            tile = finish;
             break;
         }
         default:

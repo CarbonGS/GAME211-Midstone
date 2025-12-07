@@ -23,6 +23,7 @@ public:
 	/// 
 	/// Spike : 255,0,0 (Red)
 	/// 
+	/// Finish: 0,0,255 (Blue)
 	/// </summary>
 	enum TileType { 
 		// Add more tile types as needed 
@@ -38,9 +39,10 @@ public:
 		TILE_SPAWN = 2, // Player Spawn Point
 
 		// Hazard Tiles
-		TILE_SPIKE = 3 // Spike Hazard
-		// Add more tile types as needed
+		TILE_SPIKE = 3, // Spike Hazard
 
+		// Finish Tiles
+		TILE_FINISH = 4 // Finish Line (Blue)
 	};	
 
 	int type;

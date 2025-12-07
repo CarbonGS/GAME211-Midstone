@@ -93,6 +93,9 @@
     <ClCompile Include="src\Audio.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\FinishTile.cpp">
+      <Filter>Source Files\Tiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="extern\SDL3.dll">
@@ -147,6 +150,9 @@
     </ClInclude>
     <ClInclude Include="headers\Audio.h">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\FinishTile.h">
+      <Filter>Header Files\Tiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
