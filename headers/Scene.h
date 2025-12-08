@@ -23,6 +23,8 @@ private:
 	Player* player;
 	Audio* test;
 
+	UI* gameUI;
+
 	Camera camera; // Add camera as a member
 
 public:

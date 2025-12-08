@@ -54,6 +54,7 @@ private:
 	float doubleTapThreshold = 0.25f; // seconds
 	float timeSinceStart = 0.0f; // incremented in Update
 
+public:
 	// Player stats
 	int health;
 	float attackCooldown;

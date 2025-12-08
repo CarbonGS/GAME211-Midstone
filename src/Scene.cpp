@@ -36,6 +36,9 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height)
 			break;
 		}
 	}
+
+	// Load UI images
+	gameUI = new UI(renderer);
 }
 
 Scene::~Scene()
@@ -85,6 +88,9 @@ void Scene::Render(SDL_Renderer* renderer)
 	if (player) {
 		player->Render(renderer, camera);
 	}
+
+	// Render UI
+	gameUI->Render(renderer, camera);
 
 	// Debugging: Render collision boxes
 	// Set color for tile collision boxes (e.g., red)
