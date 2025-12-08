@@ -39,6 +39,12 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSy
 		enemy->SetPositionSync(static_cast<float>(pBounds.x - 64), static_cast<float>(pBounds.y));
 	}
 	test = new Audio(fmodSystem, "assets/audio/Test Audio.wav");
+
+	jump = new Audio(fmodSystem, "assets/audio/Jump.wav");
+	
+	Theme = new Audio(fmodSystem, "assets/audio/Theme.wav");
+
+	Theme->play();
 }
 
 Scene::~Scene()

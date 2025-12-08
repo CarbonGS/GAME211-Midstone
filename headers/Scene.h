@@ -29,6 +29,8 @@ private:
 	Camera camera;
 	// Test Audio
 	Audio* test = nullptr;
+	Audio* Theme = nullptr;
+	Audio* jump = nullptr;
 	// Create more audio objects as needed
 
 	// FMOD System Pointer

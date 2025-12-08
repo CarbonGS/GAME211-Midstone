@@ -3,7 +3,10 @@
 #include "Physics.h"
 #include "SpikeTile.h"
 #include "Collision.h"
+#include "Audio.h"
 #include <iostream>
+#include <fmod.hpp>
+
 
 constexpr float GRAVITY = 600.0f; // pixels/sec^2
 constexpr float JUMP_VELOCITY = -400.0f; // Upward jump velocity
@@ -38,6 +41,11 @@ Player::Player(Image* texture)
     // Attack state
     attackTimer = 0.0f;
     attackDir = 0;
+
+    // Audio
+
+    jump = new Audio(fmodSystem, "assets/audio/Jump.wav");
+
 }
 
 void Player::TakeDamage(int amount)
