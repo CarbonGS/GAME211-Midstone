@@ -17,6 +17,16 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSy
 	levelDesigner.LevelDesignerLoad(levelImage);
 	levelDesigner.GenerateLevel(renderer);
 
+	// Load all four player images
+	Image* idleR = new Image();
+	idleR->LoadTexture(renderer, "assets/Player_IdleR.png");
+	Image* idleL = new Image();
+	idleL->LoadTexture(renderer, "assets/Player_IdleL.png");
+	Image* runR = new Image();
+	runR->LoadTexture(renderer, "assets/Player_RunR.png");
+	Image* runL = new Image();
+	runL->LoadTexture(renderer, "assets/Player_RunL.png");
+	player = new Player(idleR, idleL, runR, runL);
 	playerTexture = new Image();
 	playerTexture->LoadTexture(renderer, "assets/player.png");
 	player = new Player(playerTexture);
@@ -39,6 +49,10 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSy
 		enemy->SetPositionSync(static_cast<float>(pBounds.x - 64), static_cast<float>(pBounds.y));
 	}
 	test = new Audio(fmodSystem, "assets/audio/Test Audio.wav");
+}
+
+	// Load UI images
+	gameUI = new UI(renderer);
 }
 
 Scene::~Scene()
@@ -121,9 +135,7 @@ void Scene::Update(float deltaTime)
 
 void Scene::Render(SDL_Renderer* renderer)
 {
-	// Set Background
-	float zoom = 1.5f;
-	// Render the background (Currently only fixed background)
+	// Set Background (static, no parallax, no scaling)
 	SDL_FRect bgDestRect = { 0, 0, static_cast<float>(camera.width), static_cast<float>(camera.height) };
 	backgroundImage->Render(renderer, nullptr, &bgDestRect);
 
@@ -142,6 +154,9 @@ void Scene::Render(SDL_Renderer* renderer)
 	if (enemy) {
 		enemy->Render(renderer, camera);
 	}
+
+	// Render UI
+	gameUI->Render(renderer, camera);
 
 	// Debugging: Render collision boxes
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 128);

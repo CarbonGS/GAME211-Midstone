@@ -8,7 +8,7 @@ class Tile;
 class Player : public Entity
 {
 public:
-	Player(Image* playerTexture);
+	Player(Image* idleR, Image* idleL, Image* runR, Image* runL);
 	~Player() {} // Currently no dynamic resources to free
 
 	// Override base class Update for compatibility
@@ -29,7 +29,20 @@ public:
 	int GetAttackDirection() const { return attackDir; }
 
 private:
-	Image* playerTexture;
+	Image* idleRight;
+	Image* idleLeft;
+	Image* runRight;
+	Image* runLeft;
+	bool isRunning = false;
+	bool facingRight = true;
+
+	// Animation (for run)
+	int frameCount = 8;         // Number of frames in the run sprite sheet
+	int currentFrame = 0;       // Current animation frame
+	float frameTime = 0.1f;     // Time per frame (in seconds)
+	float frameTimer = 0.0f;    // Timer to track frame switching
+	int frameWidth = 32;        // Width of a single frame
+	int frameHeight = 32;       // Height of a single frame
 
 	// Movement
 	float velX, velY;
@@ -50,6 +63,7 @@ private:
 	float doubleTapThreshold = 0.25f; // seconds
 	float timeSinceStart = 0.0f; // incremented in Update
 
+public:
 	// Player stats
 	int health;
 	float attackCooldown;

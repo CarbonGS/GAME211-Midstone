@@ -9,6 +9,8 @@
 #include "Camera.h"
 #include "Enemy.h"
 #include "FinishTile.h"
+#include "Audio.h"
+#include "UI.h"
 
 class Scene {
 
@@ -20,7 +22,9 @@ private:
 
 	LevelDesigner levelDesigner;
 
-	Image* playerTexture;
+	// Player Objects
+	Image* idleTexture;
+	Image* runTexture;
 	Player* player;
 
 	Image* enemyTexture;
@@ -34,6 +38,9 @@ private:
 	// FMOD System Pointer
 	FMOD::System* fmodSystem = nullptr;
 
+	UI* gameUI;
+
+	Camera camera; // Add camera as a member
 	bool gameFinished = false;
 
 public:
