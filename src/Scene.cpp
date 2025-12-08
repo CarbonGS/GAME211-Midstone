@@ -47,6 +47,12 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSy
 	}
 	test = new Audio(fmodSystem, "assets/audio/Test Audio.wav");
 
+	jump = new Audio(fmodSystem, "assets/audio/Jump.wav");
+	
+	Theme = new Audio(fmodSystem, "assets/audio/Theme.wav");
+
+	Theme->play();
+
 	// Load UI images
 	gameUI = new UI(renderer);
 }

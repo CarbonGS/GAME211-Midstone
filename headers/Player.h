@@ -1,7 +1,12 @@
 #pragma once
+#include <SDL3/SDL.h>
 #include "Entity.h"
 #include "Image.h"
+#include "Audio.h"
 #include <vector>
+#include <fmod.hpp>
+
+
 
 class Tile;
 
@@ -62,6 +67,8 @@ private:
 	float lastRightTap = -1.0f;
 	float doubleTapThreshold = 0.25f; // seconds
 	float timeSinceStart = 0.0f; // incremented in Update
+
+	Audio* jump = nullptr;
 
 public:
 	// Player stats
