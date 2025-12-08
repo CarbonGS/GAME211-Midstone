@@ -15,7 +15,7 @@ public:
 	~Enemy();
 
 	void UpdateAIWithCollision(float deltaTime, float playerX, float playerY, const std::vector<Tile*>& worldTiles);
-	void Render(SDL_Renderer* renderer, const Camera& camera) override;
+	void Render(SDL_Renderer* renderer, Camera& camera) override;
 	void OnHit(Entity* other) override;
 	void Update(float deltaTime) override {} // No-op for abstract base
 

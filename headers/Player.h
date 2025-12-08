@@ -14,7 +14,7 @@ public:
 	// Override base class Update for compatibility
 	void Update(float deltaTime) override { /* Overloaded version is used not this one */ }
 	void Update(float deltaTime, const std::vector<Tile*>& worldTiles);
-	void Render(SDL_Renderer* renderer, const Camera& camera) override;
+	void Render(SDL_Renderer* renderer, Camera& camera) override;
 
 	void OnHit(Entity* other) override;
 	void HandleInput(const SDL_Event& sdlEvent);

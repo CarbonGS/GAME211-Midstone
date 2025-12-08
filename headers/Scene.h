@@ -40,7 +40,6 @@ private:
 
 	UI* gameUI;
 
-	Camera camera; // Add camera as a member
 	bool gameFinished = false;
 
 public:

@@ -230,7 +230,7 @@ void Enemy::UpdateAIWithCollision(float deltaTime, float playerX, float playerY,
 	}
 }
 
-void Enemy::Render(SDL_Renderer* renderer, const Camera& camera)
+void Enemy::Render(SDL_Renderer* renderer, Camera& camera)
 {
 	if (isInvisible) return;
 	float zoom = camera.zoom;

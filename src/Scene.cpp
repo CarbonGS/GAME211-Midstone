@@ -27,9 +27,6 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSy
 	Image* runL = new Image();
 	runL->LoadTexture(renderer, "assets/Player_RunL.png");
 	player = new Player(idleR, idleL, runR, runL);
-	playerTexture = new Image();
-	playerTexture->LoadTexture(renderer, "assets/player.png");
-	player = new Player(playerTexture);
 	camera.zoom = 2.0f;
 
 	for (Tile* tile : levelDesigner.GetWorldTiles()) { // Set Player Spawn Position
@@ -49,7 +46,6 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSy
 		enemy->SetPositionSync(static_cast<float>(pBounds.x - 64), static_cast<float>(pBounds.y));
 	}
 	test = new Audio(fmodSystem, "assets/audio/Test Audio.wav");
-}
 
 	// Load UI images
 	gameUI = new UI(renderer);
@@ -59,11 +55,11 @@ Scene::~Scene()
 {
 	delete levelImage;
 	delete backgroundImage;
-	delete playerTexture;
 	delete player;
 	delete enemyTexture;
 	delete enemy;
 	delete test;
+	delete gameUI;
 }
 
 void Scene::Update(float deltaTime)

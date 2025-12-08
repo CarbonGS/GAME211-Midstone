@@ -18,7 +18,7 @@ public:
 	virtual ~Entity() = default;
 
 	virtual void Update(float deltaTime) = 0;
-	virtual void Render(SDL_Renderer* renderer, const Camera& camera) = 0;
+	virtual void Render(SDL_Renderer* renderer, Camera& camera) = 0;
 
 	virtual void OnHit(Entity* other) = 0;
 

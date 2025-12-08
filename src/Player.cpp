@@ -197,7 +197,8 @@ void Player::Update(float deltaTime, const std::vector<Tile*>& worldTiles)
             frameTimer -= frameTime;
             currentFrame = (currentFrame + 1) % frameCount;
         }
-    } else {
+    }
+    else {
         frameTimer += deltaTime;
         if (frameTimer >= frameTime) {
             frameTimer -= frameTime;
@@ -209,25 +210,26 @@ void Player::Update(float deltaTime, const std::vector<Tile*>& worldTiles)
 
     // Attack cooldown
     if (attackCooldown > 0) {
-    // --- Remaining Cooldowns ---
-    if (attackCooldown > 0.0f) {
-        attackCooldown -= deltaTime;
-        if (attackCooldown < 0.0f)
-            attackCooldown = 0.0f;
-    }
+        // --- Remaining Cooldowns ---
+        if (attackCooldown > 0.0f) {
+            attackCooldown -= deltaTime;
+            if (attackCooldown < 0.0f)
+                attackCooldown = 0.0f;
+        }
 
-    if (dashCooldown > 0.0f) {
-        dashCooldown -= deltaTime;
-        if (dashCooldown <= 0.0f) {
-            canDash = true;
-            dashCooldown = 0.0f;
-            lastLeftTap = -10000.0f;
-            lastRightTap = -10000.0f;
+        if (dashCooldown > 0.0f) {
+            dashCooldown -= deltaTime;
+            if (dashCooldown <= 0.0f) {
+                canDash = true;
+                dashCooldown = 0.0f;
+                lastLeftTap = -10000.0f;
+                lastRightTap = -10000.0f;
+            }
         }
     }
 }
 
-void Player::Render(SDL_Renderer* renderer, const Camera& camera)
+void Player::Render(SDL_Renderer* renderer, Camera& camera)
 {
     float zoom = camera.zoom;
 
@@ -250,17 +252,19 @@ void Player::Render(SDL_Renderer* renderer, const Camera& camera)
         } else if (!facingRight && runLeft && runLeft->GetTexture()) {
             runLeft->Render(renderer, &src, &dst);
         }
-    } else {
+    }
+    else {
         //SDL_FRect src = { 0.0f, 0.0f, static_cast<float>(frameWidth), static_cast<float>(frameHeight) };
         SDL_FRect src = {
             static_cast<float>(currentFrame * frameWidth),
             0.0f,
             static_cast<float>(frameWidth),
-            static_cast<float>(frameHeight) 
+            static_cast<float>(frameHeight)
         };
         if (facingRight && idleRight && idleRight->GetTexture()) {
             idleRight->Render(renderer, &src, &dst);
-        } else if (!facingRight && idleLeft && idleLeft->GetTexture()) {
+        }
+        else if (!facingRight && idleLeft && idleLeft->GetTexture()) {
             idleLeft->Render(renderer, &src, &dst);
         }
     }
