@@ -13,8 +13,8 @@ class Tile;
 class Player : public Entity
 {
 public:
-	Player(Image* idleR, Image* idleL, Image* runR, Image* runL);
-	~Player() {} // Currently no dynamic resources to free
+	Player(Image* idleR, Image* idleL, Image* runR, Image* runL, FMOD::System* fmodSystem);
+	~Player() { delete jump; }
 
 	// Override base class Update for compatibility
 	void Update(float deltaTime) override { /* Overloaded version is used not this one */ }
@@ -27,7 +27,7 @@ public:
 	void TakeDamage(int amount);
 	int GetHealth() const { return health; }
 
-	// --- Attack ---
+	// Attack
 	bool CanAttack() const { return attackCooldown <= 0.0f; }
 	void Attack(int direction); // -1: left, 1: right
 	bool IsAttacking() const { return attackTimer > 0.0f; }
@@ -38,6 +38,7 @@ private:
 	Image* idleLeft;
 	Image* runRight;
 	Image* runLeft;
+	//FMOD::System* fmod;
 	bool isRunning = false;
 	bool facingRight = true;
 
@@ -68,7 +69,8 @@ private:
 	float doubleTapThreshold = 0.25f; // seconds
 	float timeSinceStart = 0.0f; // incremented in Update
 
-	Audio* jump = nullptr;
+	// Audio
+	Audio* jump;
 
 public:
 	// Player stats

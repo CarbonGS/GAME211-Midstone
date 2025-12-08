@@ -23,9 +23,10 @@ constexpr float ENEMY_INVISIBLE_TIME = 1.0f; // seconds
 static float CenterX(const SDL_Rect& r) { return r.x + r.w / 2.0f; }
 static float CenterY(const SDL_Rect& r) { return r.y + r.h / 2.0f; }
 
-Enemy::Enemy(Image* texture)
+Enemy::Enemy(Image* left, Image* right)
 {
-	enemyTexture = texture;
+	enemyTextureL = left;
+	enemyTextureR = right;
 	velX = 0;
 	velY = 0;
 	onGround = false;
@@ -49,6 +50,12 @@ void Enemy::UpdateAIWithCollision(float deltaTime, float playerX, float playerY,
 {
 	static float timeSinceStart = 0.0f;
 	timeSinceStart += deltaTime;
+
+	frameTimer += deltaTime;
+	if (frameTimer >= frameTime) {
+		frameTimer -= frameTime;
+		currentFrame = (currentFrame + 1) % 8;
+	}
 
 	// Invisibility/teleport logic
 	if (isInvisible) {
@@ -240,9 +247,13 @@ void Enemy::Render(SDL_Renderer* renderer, Camera& camera)
 		static_cast<float>(GetBounds().w) * zoom,
 		static_cast<float>(GetBounds().h) * zoom
 	};
-	if (enemyTexture && enemyTexture->GetTexture()) {
-		enemyTexture->Render(renderer, nullptr, &dst);
-	}
+	SDL_FRect src = {
+		   static_cast<float>(currentFrame * 32),
+		   0.0f,
+		   static_cast<float>(32),
+		   static_cast<float>(32)
+	};
+	enemyTextureR->Render(renderer,&src,&dst);
 }
 
 void Enemy::OnHit(Entity* other)

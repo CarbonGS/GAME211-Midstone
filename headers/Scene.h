@@ -23,19 +23,15 @@ private:
 	LevelDesigner levelDesigner;
 
 	// Player Objects
-	Image* idleTexture;
-	Image* runTexture;
+
 	Player* player;
 
 	Image* enemyTexture;
 	Enemy* enemy;
 
 	Camera camera;
-	// Test Audio
-	Audio* test = nullptr;
+	// Audio
 	Audio* Theme = nullptr;
-	Audio* jump = nullptr;
-	// Create more audio objects as needed
 
 	// FMOD System Pointer
 	FMOD::System* fmodSystem = nullptr;

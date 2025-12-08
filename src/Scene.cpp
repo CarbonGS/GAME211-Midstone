@@ -4,7 +4,7 @@
 #include <iostream>
 
 Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSystem)
-	: camera(0, 0, width, height, 2.5f), fmodSystem(fmodSystem) // camera zoom is the last float parameter in camera constructor
+	: camera(0, 0, width, height, 2.75f), fmodSystem(fmodSystem) // camera zoom is the last float parameter in camera constructor
 {
 	levelImage = new Image();
 	levelImage->LoadSurface("assets/lvl.png");
@@ -26,7 +26,7 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSy
 	runR->LoadTexture(renderer, "assets/Player_RunR.png");
 	Image* runL = new Image();
 	runL->LoadTexture(renderer, "assets/Player_RunL.png");
-	player = new Player(idleR, idleL, runR, runL);
+	player = new Player(idleR, idleL, runR, runL, fmodSystem);
 	camera.zoom = 2.0f;
 
 	for (Tile* tile : levelDesigner.GetWorldTiles()) { // Set Player Spawn Position
@@ -38,19 +38,16 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSy
 
 	// Enemy setup
 	enemyTexture = new Image();
-	enemyTexture->LoadTexture(renderer, "assets/tiles/spike.png");
-	enemy = new Enemy(enemyTexture);
+	enemyTexture->LoadTexture(renderer, "assets/SlimeR.png");
+	enemy = new Enemy(enemyTexture, enemyTexture);
 	// Spawn enemy behind player
 	if (player) {
 		SDL_Rect pBounds = player->GetBounds();
 		enemy->SetPositionSync(static_cast<float>(pBounds.x - 64), static_cast<float>(pBounds.y));
 	}
-	test = new Audio(fmodSystem, "assets/audio/Test Audio.wav");
 
-	jump = new Audio(fmodSystem, "assets/audio/Jump.wav");
-	
+	// Audio
 	Theme = new Audio(fmodSystem, "assets/audio/Theme.wav");
-
 	Theme->play();
 
 	// Load UI images
@@ -64,7 +61,6 @@ Scene::~Scene()
 	delete player;
 	delete enemyTexture;
 	delete enemy;
-	delete test;
 	delete gameUI;
 }
 
@@ -125,7 +121,6 @@ void Scene::Update(float deltaTime)
 	for (const Tile* tile : levelDesigner.GetWorldTiles()) {
 		if (tile->type == Tile::TILE_FINISH) {
 			if (SDL_HasRectIntersection(&playerRect, &tile->collisionRect)) {
-				test->play();
 				gameFinished = true;
 				std::cout << "You reached the finish line! Game Over." << std::endl;
 				break;
@@ -161,37 +156,37 @@ void Scene::Render(SDL_Renderer* renderer)
 	gameUI->Render(renderer, camera);
 
 	// Debugging: Render collision boxes
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 128);
-	for (const Tile* tile : worldTiles) {
-		if (tile->type != Tile::TILE_EMPTY) {
-			SDL_FRect rect = {
-				(float)tile->collisionRect.x - camera.x,
-				(float)tile->collisionRect.y - camera.y,
-				(float)tile->collisionRect.w,
-				(float)tile->collisionRect.h
-			};
-			// Apply camera zoom if needed
-			rect.x *= camera.zoom;
-			rect.y *= camera.zoom;
-			rect.w *= camera.zoom;
-			rect.h *= camera.zoom;
-			SDL_RenderRect(renderer, &rect);
-		}
-	}
-	// Set color for player collision box
-	SDL_SetRenderDrawColor(renderer, 0, 255, 0, 128);
-	SDL_Rect playerRect = player->GetBounds();
-	SDL_FRect playerFRect = {
-		(float)playerRect.x - camera.x,
-		(float)playerRect.y - camera.y,
-		(float)playerRect.w,
-		(float)playerRect.h
-	};
-	playerFRect.x *= camera.zoom;
-	playerFRect.y *= camera.zoom;
-	playerFRect.w *= camera.zoom;
-	playerFRect.h *= camera.zoom;
-	SDL_RenderRect(renderer, &playerFRect);
+	//SDL_SetRenderDrawColor(renderer, 255, 0, 0, 128);
+	//for (const Tile* tile : worldTiles) {
+	//	if (tile->type != Tile::TILE_EMPTY) {
+	//		SDL_FRect rect = {
+	//			(float)tile->collisionRect.x - camera.x,
+	//			(float)tile->collisionRect.y - camera.y,
+	//			(float)tile->collisionRect.w,
+	//			(float)tile->collisionRect.h
+	//		};
+	//		// Apply camera zoom if needed
+	//		rect.x *= camera.zoom;
+	//		rect.y *= camera.zoom;
+	//		rect.w *= camera.zoom;
+	//		rect.h *= camera.zoom;
+	//		SDL_RenderRect(renderer, &rect);
+	//	}
+	//}
+	//// Set color for player collision box
+	//SDL_SetRenderDrawColor(renderer, 0, 255, 0, 128);
+	//SDL_Rect playerRect = player->GetBounds();
+	//SDL_FRect playerFRect = {
+	//	(float)playerRect.x - camera.x,
+	//	(float)playerRect.y - camera.y,
+	//	(float)playerRect.w,
+	//	(float)playerRect.h
+	//};
+	//playerFRect.x *= camera.zoom;
+	//playerFRect.y *= camera.zoom;
+	//playerFRect.w *= camera.zoom;
+	//playerFRect.h *= camera.zoom;
+	//SDL_RenderRect(renderer, &playerFRect);
 
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }
@@ -208,7 +203,7 @@ void Scene::EventHandler(const SDL_Event& sdlEvent)
 		}
 	}
 
-	// --- Player Attack Input ---
+	// Player Attack Input
 	if (sdlEvent.type == SDL_EVENT_MOUSE_BUTTON_DOWN && sdlEvent.button.button == SDL_BUTTON_LEFT) {
 		int mx = sdlEvent.button.x;
 		int winW = camera.width;

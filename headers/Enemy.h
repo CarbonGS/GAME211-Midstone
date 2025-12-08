@@ -11,7 +11,7 @@ class Player;
 class Enemy : public Entity
 {
 public:
-	Enemy(Image* enemyTexture);
+	Enemy(Image* left, Image* right);
 	~Enemy();
 
 	void UpdateAIWithCollision(float deltaTime, float playerX, float playerY, const std::vector<Tile*>& worldTiles);
@@ -30,7 +30,12 @@ public:
 	bool IsInvisible() const { return isInvisible; }
 
 private:
-	Image* enemyTexture;
+	Image* enemyTextureL;
+	Image* enemyTextureR;
+	float frameTimer;
+	float frameTime;
+	int frameCount;
+	int currentFrame;
 	float velX, velY;
 	bool onGround;
 

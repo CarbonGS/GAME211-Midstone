@@ -76,10 +76,10 @@ void UI::Render(SDL_Renderer* renderer, const Camera& camera)
 		static_cast<float>(64)
 	};
 
-	playButton->Render(renderer, nullptr, &b1DestRect); // b1
+	//playButton->Render(renderer, nullptr, &b1DestRect); // b1
 	//restartButton->Render(renderer, nullptr, &b1DestRect);
 	//quitButton->Render(renderer, nullptr, &b2DestRect); // b2
-	menuButton->Render(renderer, nullptr, &b2DestRect);
+	//menuButton->Render(renderer, nullptr, &b2DestRect);
 
 	// Win/Lose png position
 	SDL_FRect wlDestRect = {
@@ -88,7 +88,7 @@ void UI::Render(SDL_Renderer* renderer, const Camera& camera)
 		static_cast<float>(360),
 		static_cast<float>(64)
 	};
-	youWon->Render(renderer, nullptr, &wlDestRect);
+	//youWon->Render(renderer, nullptr, &wlDestRect);
 	//youLost->Render(renderer, nullptr, &wlDestRect);
 }
 

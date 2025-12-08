@@ -12,7 +12,7 @@ constexpr float GRAVITY = 600.0f; // pixels/sec^2
 constexpr float JUMP_VELOCITY = -400.0f; // Upward jump velocity
 constexpr float DAMAGE_COOLDOWN_TIME = 1.0f; // seconds
 
-Player::Player(Image* idleR, Image* idleL, Image* runR, Image* runL)
+Player::Player(Image* idleR, Image* idleL, Image* runR, Image* runL, FMOD::System* fmodSystem)
 {
     idleRight = idleR;
     idleLeft = idleL;
@@ -41,12 +41,12 @@ Player::Player(Image* idleR, Image* idleL, Image* runR, Image* runL)
     bounds = { 0, 0, 32, 32 };
     x = static_cast<float>(bounds.x);
     y = static_cast<float>(bounds.y);
+
     // Attack state
     attackTimer = 0.0f;
     attackDir = 0;
 
     // Audio
-
     jump = new Audio(fmodSystem, "assets/audio/Jump.wav");
 
 }
@@ -88,11 +88,13 @@ void Player::Update(float deltaTime, const std::vector<Tile*>& worldTiles)
     // Handle jump input
     if (jumpRequested) {
         if (onGround) {
+             jump->play();
             velY = JUMP_VELOCITY;
             onGround = false;
             canDoubleJump = true;
         }
         else if (canDoubleJump) {
+            jump->play();
             velY = JUMP_VELOCITY;
             canDoubleJump = false;
         }
@@ -218,21 +220,20 @@ void Player::Update(float deltaTime, const std::vector<Tile*>& worldTiles)
 
     // Attack cooldown
     if (attackCooldown > 0) {
-        // --- Remaining Cooldowns ---
+        // Remaining Cooldowns
         if (attackCooldown > 0.0f) {
             attackCooldown -= deltaTime;
             if (attackCooldown < 0.0f)
                 attackCooldown = 0.0f;
         }
-
-        if (dashCooldown > 0.0f) {
-            dashCooldown -= deltaTime;
-            if (dashCooldown <= 0.0f) {
-                canDash = true;
-                dashCooldown = 0.0f;
-                lastLeftTap = -10000.0f;
-                lastRightTap = -10000.0f;
-            }
+    }
+    if (dashCooldown > 0.0f) {
+        dashCooldown -= deltaTime;
+        if (dashCooldown <= 0.0f) {
+            canDash = true;
+            dashCooldown = 0.0f;
+            lastLeftTap = -10000.0f;
+            lastRightTap = -10000.0f;
         }
     }
 }
