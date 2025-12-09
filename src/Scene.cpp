@@ -153,7 +153,7 @@ void Scene::Render(SDL_Renderer* renderer)
 	}
 
 	// Render UI
-	gameUI->Render(renderer, camera);
+	gameUI->Render(renderer, camera, *player);
 
 	// Debugging: Render collision boxes
 	//SDL_SetRenderDrawColor(renderer, 255, 0, 0, 128);

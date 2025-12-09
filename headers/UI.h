@@ -6,9 +6,12 @@
 
 class UI {
 public:
+
 	UI(SDL_Renderer* renderer);
 	~UI() {};
-	void Render(SDL_Renderer* renderer, const Camera& camera);
+
+	void Update(Player player);
+	void Render(SDL_Renderer* renderer, const Camera& camera, Player& player);
 
 private:
 	// All UI images;
@@ -33,6 +36,7 @@ private:
 	Image* health90;
 	Image* health100;
 
+	Image* currentHealth;
 };
 
  

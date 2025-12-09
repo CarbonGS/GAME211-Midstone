@@ -39,9 +39,11 @@ UI::UI(SDL_Renderer* renderer) {
 	health90->LoadTexture(renderer, "assets/Health_90.png");
 	health100 = new Image();
 	health100->LoadTexture(renderer, "assets/Health_100.png");
+
+	currentHealth = health100;
 }
 
-void UI::Render(SDL_Renderer* renderer, const Camera& camera)
+void UI::Render(SDL_Renderer* renderer, const Camera& camera, Player& player)
 {
 	// Pause Button (Top-left)
 	SDL_FRect pbDestRect = {
@@ -59,7 +61,41 @@ void UI::Render(SDL_Renderer* renderer, const Camera& camera)
 		static_cast<float>(180),
 		static_cast<float>(32)
 	};
-	health100->Render(renderer, nullptr, &phDestRect);
+
+	if (player.health >= 100) {
+		currentHealth = health100;
+	}
+	else if (player.health < 100 && player.health >= 90) {
+		currentHealth = health90;
+	}
+	else if (player.health < 90 && player.health >= 80) {
+		currentHealth = health80;
+	}
+	else if (player.health < 80 && player.health >= 70) {
+		currentHealth = health70;
+	}
+	else if (player.health < 70 && player.health >= 60) {
+		currentHealth = health60;
+	}
+	else if (player.health < 60 && player.health >= 50) {
+		currentHealth = health50;
+	}
+	else if (player.health < 50 && player.health >= 40) {
+		currentHealth = health40;
+	}
+	else if (player.health < 40 && player.health >= 30) {
+		currentHealth = health30;
+	}
+	else if (player.health < 30 && player.health >= 20) {
+		currentHealth = health20;
+	}
+	else if (player.health < 20 && player.health >= 10) {
+		currentHealth = health10;
+	}
+	else if (player.health == 0) {
+		currentHealth = health0;
+	}
+	currentHealth->Render(renderer, nullptr, &phDestRect);
 
 	// b1 and b2 correspond to button 1 and button 2 positions
 	// b1 is middle higher, b2 is middle lower;
