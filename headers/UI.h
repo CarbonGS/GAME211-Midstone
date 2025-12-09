@@ -1,42 +1,19 @@
 #pragma once
-#include <SDL3/SDL.h>
 #include "Image.h"
-#include "Player.h"
 #include "Camera.h"
+#include "Player.h"
+#include "GameState.h"
+#include <SDL3/SDL.h>
 
 class UI {
 public:
-
 	UI(SDL_Renderer* renderer);
-	~UI() {};
-
-	void Update(Player player);
 	void Render(SDL_Renderer* renderer, const Camera& camera, Player& player);
+	void HandleEvent(const SDL_Event& event);
 
 private:
-	// All UI images;
-	Image* playButton;
-	Image* quitButton;
-	Image* restartButton;
-	Image* menuButton;
-	Image* pauseButton;
-
-	Image* youWon;
-	Image* youLost;
-
-	Image* health0;
-	Image* health10;
-	Image* health20;
-	Image* health30;
-	Image* health40;
-	Image* health50;
-	Image* health60;
-	Image* health70;
-	Image* health80;
-	Image* health90;
-	Image* health100;
-
-	Image* currentHealth;
+	Image *pauseButton, *playButton, *restartButton, *quitButton, *menuButton;
+	Image *youWon, *youLost;
+	Image *health0, *health10, *health20, *health30, *health40, *health50, *health60, *health70, *health80, *health90, *health100;
+	Image *currentHealth;
 };
-
- 

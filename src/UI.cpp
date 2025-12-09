@@ -1,4 +1,8 @@
 #include "UI.h"
+#include "GameState.h"
+#include "RestartFlag.h"
+#include <SDL3/SDL.h>
+#include <iostream>
 
 UI::UI(SDL_Renderer* renderer) {
 	pauseButton = new Image();
@@ -45,86 +49,96 @@ UI::UI(SDL_Renderer* renderer) {
 
 void UI::Render(SDL_Renderer* renderer, const Camera& camera, Player& player)
 {
-	// Pause Button (Top-left)
-	SDL_FRect pbDestRect = {
-		(32),
-		(32),
-		static_cast<float>(64),
-		static_cast<float>(64)
-	};
-	pauseButton->Render(renderer, nullptr, &pbDestRect);
+	// Button rects
+	SDL_FRect pbDestRect = { 32, 32, 64, 64 };
+	SDL_FRect phDestRect = { 1280 - 200, 720 - 698, 180, 32 };
+	SDL_FRect b1DestRect = { 1280 / 2.8f, 720 / 3.0f, 360, 64 };
+	SDL_FRect b2DestRect = { 1280 / 2.8f, 720 / 2.0f, 360, 64 };
+	SDL_FRect wlDestRect = { 1280 / 2.8f, 720 / 7.0f, 360, 64 };
 
-	// Player Health (Top-right)
-	SDL_FRect phDestRect = {
-		(1280 - 200),
-		(720 - 698),
-		static_cast<float>(180),
-		static_cast<float>(32)
-	};
+	// Health bar
+	if (player.health >= 100) currentHealth = health100;
+	else if (player.health >= 90) currentHealth = health90;
+	else if (player.health >= 80) currentHealth = health80;
+	else if (player.health >= 70) currentHealth = health70;
+	else if (player.health >= 60) currentHealth = health60;
+	else if (player.health >= 50) currentHealth = health50;
+	else if (player.health >= 40) currentHealth = health40;
+	else if (player.health >= 30) currentHealth = health30;
+	else if (player.health >= 20) currentHealth = health20;
+	else if (player.health >= 10) currentHealth = health10;
+	else currentHealth = health0;
 
-	if (player.health >= 100) {
-		currentHealth = health100;
+	// --- UI by Game State ---
+	if (gGameState == MAIN_MENU) {
+		playButton->Render(renderer, nullptr, &b1DestRect);
+		quitButton->Render(renderer, nullptr, &b2DestRect);
 	}
-	else if (player.health < 100 && player.health >= 90) {
-		currentHealth = health90;
+	else if (gGameState == PLAYING) {
+		pauseButton->Render(renderer, nullptr, &pbDestRect);
+		currentHealth->Render(renderer, nullptr, &phDestRect);
 	}
-	else if (player.health < 90 && player.health >= 80) {
-		currentHealth = health80;
+	else if (gGameState == PAUSED) {
+		restartButton->Render(renderer, nullptr, &b1DestRect);
+		quitButton->Render(renderer, nullptr, &b2DestRect);
+		menuButton->Render(renderer, nullptr, &pbDestRect);
+		currentHealth->Render(renderer, nullptr, &phDestRect);
 	}
-	else if (player.health < 80 && player.health >= 70) {
-		currentHealth = health70;
+	else if (gGameState == GAME_OVER) {
+		youLost->Render(renderer, nullptr, &wlDestRect);
+		restartButton->Render(renderer, nullptr, &b1DestRect);
+		quitButton->Render(renderer, nullptr, &b2DestRect);
+		menuButton->Render(renderer, nullptr, &pbDestRect);
+		currentHealth->Render(renderer, nullptr, &phDestRect);
 	}
-	else if (player.health < 70 && player.health >= 60) {
-		currentHealth = health60;
+	else if (gGameState == GAME_WON) {
+		youWon->Render(renderer, nullptr, &wlDestRect);
+		restartButton->Render(renderer, nullptr, &b1DestRect);
+		quitButton->Render(renderer, nullptr, &b2DestRect);
+		menuButton->Render(renderer, nullptr, &pbDestRect);
+		currentHealth->Render(renderer, nullptr, &phDestRect);
 	}
-	else if (player.health < 60 && player.health >= 50) {
-		currentHealth = health50;
-	}
-	else if (player.health < 50 && player.health >= 40) {
-		currentHealth = health40;
-	}
-	else if (player.health < 40 && player.health >= 30) {
-		currentHealth = health30;
-	}
-	else if (player.health < 30 && player.health >= 20) {
-		currentHealth = health20;
-	}
-	else if (player.health < 20 && player.health >= 10) {
-		currentHealth = health10;
-	}
-	else if (player.health == 0) {
-		currentHealth = health0;
-	}
-	currentHealth->Render(renderer, nullptr, &phDestRect);
+}
 
-	// b1 and b2 correspond to button 1 and button 2 positions
-	// b1 is middle higher, b2 is middle lower;
-	SDL_FRect b1DestRect = {
-	(1280 / 2.8),
-	(720 / 3),
-	static_cast<float>(360),
-	static_cast<float>(64)
-	};
-	SDL_FRect b2DestRect = {
-		(1280 / 2.8),
-		(720 / 2),
-		static_cast<float>(360),
-		static_cast<float>(64)
-	};
+void UI::HandleEvent(const SDL_Event& event)
+{
+	if (event.type != SDL_EVENT_MOUSE_BUTTON_DOWN || event.button.button != SDL_BUTTON_LEFT)
+		return;
+	float mx = static_cast<float>(event.button.x);
+	float my = static_cast<float>(event.button.y);
+	SDL_FRect b1DestRect = { 1280 / 2.8f, 720 / 3.0f, 360, 64 };
+	SDL_FRect b2DestRect = { 1280 / 2.8f, 720 / 2.0f, 360, 64 };
+	SDL_FRect pbDestRect = { 32, 32, 64, 64 };
 
-	//playButton->Render(renderer, nullptr, &b1DestRect); // b1
-	//restartButton->Render(renderer, nullptr, &b1DestRect);
-	//quitButton->Render(renderer, nullptr, &b2DestRect); // b2
-	//menuButton->Render(renderer, nullptr, &b2DestRect);
-
-	// Win/Lose png position
-	SDL_FRect wlDestRect = {
-		(1280 / 2.8),
-		(720 / 7),
-		static_cast<float>(360),
-		static_cast<float>(64)
-	};
-	//youWon->Render(renderer, nullptr, &wlDestRect);
-	//youLost->Render(renderer, nullptr, &wlDestRect);
+	if (gGameState == MAIN_MENU) {
+		if (mx >= b1DestRect.x && mx <= b1DestRect.x + b1DestRect.w && my >= b1DestRect.y && my <= b1DestRect.y + b1DestRect.h) {
+			gGameState = PLAYING;
+			std::cout << "Play pressed" << std::endl;
+		}
+		else if (mx >= b2DestRect.x && mx <= b2DestRect.x + b2DestRect.w && my >= b2DestRect.y && my <= b2DestRect.y + b2DestRect.h) {
+			std::cout << "Quit pressed" << std::endl;
+			SDL_Event quitEvent; quitEvent.type = SDL_EVENT_QUIT; SDL_PushEvent(&quitEvent);
+		}
+	}
+	else if (gGameState == PLAYING) {
+		if (mx >= pbDestRect.x && mx <= pbDestRect.x + pbDestRect.w && my >= pbDestRect.y && my <= pbDestRect.y + pbDestRect.h) {
+			gGameState = PAUSED;
+			std::cout << "Pause pressed" << std::endl;
+		}
+	}
+	else if (gGameState == PAUSED || gGameState == GAME_OVER || gGameState == GAME_WON) {
+		if (mx >= b1DestRect.x && mx <= b1DestRect.x + b1DestRect.w && my >= b1DestRect.y && my <= b1DestRect.y + b1DestRect.h) {
+			gRequestRestart = true;
+			std::cout << "Restart pressed" << std::endl;
+		}
+		else if (mx >= b2DestRect.x && mx <= b2DestRect.x + b2DestRect.w && my >= b2DestRect.y && my <= b2DestRect.y + b2DestRect.h) {
+			std::cout << "Quit pressed" << std::endl;
+			SDL_Event quitEvent; quitEvent.type = SDL_EVENT_QUIT; SDL_PushEvent(&quitEvent);
+		}
+		else if (mx >= pbDestRect.x && mx <= pbDestRect.x + pbDestRect.w && my >= pbDestRect.y && my <= pbDestRect.y + pbDestRect.h) {
+			gGameState = MAIN_MENU;
+			std::cout << "Menu pressed" << std::endl;
+		}
+	}
 }
 

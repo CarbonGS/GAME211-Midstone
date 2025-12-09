@@ -50,5 +50,6 @@ public:
 	void EventHandler(const SDL_Event& sdlEvent); // Handle scene-specific events here
 	void HandleCollisions(); // Handle collisions between entities here
 	bool IsGameFinished() const { return gameFinished; }
-
+	Camera& GetCamera() { return camera; }
+	Player* GetPlayer() { return player; }
 };

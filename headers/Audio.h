@@ -7,6 +7,7 @@ public:
     Audio(FMOD::System* system, const std::string& filename);
     ~Audio();
     void play();
+    void stop(); // Add stop method
     bool isPlaying() const;
 private:
     FMOD::System* system = nullptr;

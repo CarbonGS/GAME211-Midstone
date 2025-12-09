@@ -21,8 +21,16 @@ void Audio::play() {
     }
 }
 
+void Audio::stop() {
+	if (channel) {
+		channel->stop();
+	}
+}
+
 bool Audio::isPlaying() const {
     bool playing = false;
-    if (channel) channel->isPlaying(&playing);
+    if (channel) {
+        channel->isPlaying(&playing);
+    }
     return playing;
 }

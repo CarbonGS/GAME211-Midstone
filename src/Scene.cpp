@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "GameState.h"
 #include "Audio.h"
 #include "Enemy.h"
 #include <iostream>
@@ -56,17 +57,22 @@ Scene::Scene(SDL_Renderer* renderer, int width, int height, FMOD::System* fmodSy
 
 Scene::~Scene()
 {
+	if (Theme) Theme->stop();
 	delete levelImage;
 	delete backgroundImage;
 	delete player;
 	delete enemyTexture;
 	delete enemy;
 	delete gameUI;
+	delete Theme;
 }
 
 void Scene::Update(float deltaTime)
 {
-	if (gameFinished) return;
+	if (Theme && !Theme->isPlaying()) {
+		Theme->play(); // Ensure theme loops
+	}
+	if (gGameState != PLAYING) return;
 	// Update world tiles (physics for spikes, etc.)
 	levelDesigner.UpdateWorldTiles(deltaTime);
 
@@ -78,6 +84,7 @@ void Scene::Update(float deltaTime)
 			player->GetBounds().y + player->GetBounds().h / 2);
 		// End game if player HP is zero or less
 		if (player->GetHealth() <= 0) {
+			gGameState = GAME_OVER;
 			gameFinished = true;
 			std::cout << "Player died! Game Over." << std::endl;
 			return;
@@ -121,13 +128,14 @@ void Scene::Update(float deltaTime)
 	for (const Tile* tile : levelDesigner.GetWorldTiles()) {
 		if (tile->type == Tile::TILE_FINISH) {
 			if (SDL_HasRectIntersection(&playerRect, &tile->collisionRect)) {
+				if (Theme) Theme->play();
+				gGameState = GAME_WON;
 				gameFinished = true;
 				std::cout << "You reached the finish line! Game Over." << std::endl;
 				break;
 			}
 		}
 	}
-	// Other scene updates
 }
 
 void Scene::Render(SDL_Renderer* renderer)

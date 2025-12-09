@@ -1,5 +1,8 @@
 #include <Engine.h>
 #include <Scene.h>
+#include <UI.h>
+#include <GameState.h>
+#include <RestartFlag.h>
 #include <fmod.hpp>
 
 int main(int argc, char* argv[]) {
@@ -10,20 +13,9 @@ int main(int argc, char* argv[]) {
 	int width;
 	int height;
 
-#ifdef _DEBUG
 	width = 1280;
 	height = 720;
-#else
-	SDL_DisplayMode dm;
-	if (SDL_GetCurrentDisplayMode(0, &dm) != 0) {
-		SDL_Log("SDL_GetCurrentDisplayMode failed: %s", SDL_GetError());
-		return -1;
-	}
-	else {
-		width = dm.w;
-		height = dm.h;
-	}
-#endif
+
 	SDL_Log("Window Size: %dx%d", width, height);
 	Engine::Window window("Revenir", width, height);
 
@@ -35,8 +27,8 @@ int main(int argc, char* argv[]) {
 	bool running = true;
 	SDL_Event event;
 
-	// Main loop
 	Scene* scene = new Scene(window.GetRenderer(), width, height, fmodSystem);
+	UI* ui = new UI(window.GetRenderer());
 
 	Engine::Timer timer;
 	timer.Start();
@@ -52,17 +44,28 @@ int main(int argc, char* argv[]) {
 			if (event.type == SDL_EVENT_QUIT) {
 				running = false;
 			}
+			ui->HandleEvent(event);
 			scene->EventHandler(event);
 		}
 
 		window.Clear();
 
 		scene->Update(deltaTime);
-		scene->Render(window.GetRenderer()); // Render needs the SDL_Renderer from the window to draw
+		scene->Render(window.GetRenderer());
+		ui->Render(window.GetRenderer(), scene->GetCamera(), *scene->GetPlayer());
 
 		window.Present();
+
+		// Handle Restart
+		if (gRequestRestart) {
+			delete scene;
+			scene = new Scene(window.GetRenderer(), width, height, fmodSystem);
+			gGameState = PLAYING;
+			gRequestRestart = false;
+		}
 	}
 
+	delete ui;
 	delete scene;
 
 	fmodSystem->close();
